@@ -1,2 +1,3 @@
-# xavi
-Powerful command line audio processing
+# Xavi
+Read the ongoing notes [here](http://bit.do/xavinotes)
+
