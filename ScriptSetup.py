@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Installer
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 042519.4x0002
+Version:: 042519.4x0003
 
 /NOTES/
 
@@ -24,7 +24,10 @@ def unpack(branch,files,rep,trees):
         fileName = (((letter.split('/')[-1])).lower())
         if fileName in [".gitignore","license","readme.md", "scriptsetup.py"]:
             continue
-        print("Downloading " + (letter.split('/')[-1]) + "...")
+        if not os.path.exists(fileName):
+            print("Downloading " + (letter.split('/')[-1]) + "...")
+        else:
+            print("Updating " + (letter.split('/')[-1]) + "...")
         letterfix = (letter.split('/'))
         del letterfix[3]
         letterfix = '/'.join(letterfix)
