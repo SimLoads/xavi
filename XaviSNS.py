@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Stop and Swap System
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 041219.2x0002
+Version:: 041219.1x0002
 
 /NOTES/
 
@@ -13,7 +13,7 @@ Version:: 041219.2x0002
 '''
 import sys
 import os
-def error(type):
+def error(type, param=""):
     print("An error occured.")
     print("- Reason given:")
     if type == "argument":
@@ -22,6 +22,9 @@ def error(type):
     elif type == "import":
         print("-- Xavi or another tool could not be imported")
         print("-- Ensure Xavi is in the same directory")
+    elif type == "call":
+        print("-- " + param + ": invalid function")
+        print("-- Use XaviSAS -h for help.")
     else:
         print("-- null")
     exit()
@@ -37,11 +40,11 @@ def help():
     print("  -c : Specify funciton to call")
     print("  -f : Specify file to use")
 
-def run(functionToCall, filename):
+def run(functionToCall, filename=''):
     try:
         result = getattr(Xavi, functionToCall)(filename)
     except AttributeError:
-        error("call")
+        error("call", functionToCall)
     exit()
 
 if __name__ == "__main__":
@@ -61,4 +64,6 @@ if __name__ == "__main__":
         filename = ((lj.split('-f', 1)[1]).split('-', 1)[0]).replace(' ','')
         if len(filename) == 0:
             error("argument")
+    else:
+        filename='null'
     run(functionToCall, filename)
