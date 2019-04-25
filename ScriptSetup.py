@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Installer
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 042419.4x0001
+Version:: 042519.4x0002
 
 /NOTES/
 
@@ -17,11 +17,12 @@ import urllib.request
 import re
 import glob
 import zipfile
+import time
+import shutil
 def unpack(branch,files,rep,trees):
     for number,letter in enumerate(files):
-        if (((letter.split('/')[-1])).lower()) == "license":
-            continue
-        if (((letter.split('/')[-1])).lower()) == ".gitignore":
+        fileName = (((letter.split('/')[-1])).lower())
+        if fileName in [".gitignore","license","readme.md", "scriptsetup.py"]:
             continue
         print("Downloading " + (letter.split('/')[-1]) + "...")
         letterfix = (letter.split('/'))
@@ -44,20 +45,40 @@ def unpack(branch,files,rep,trees):
             print("Failed to download: " + ((letter.split('/')[-1])))
     if "types" in os.getcwd():
         print("Installed Xavi.")
+        if tImport == False:
+            print("Cleaning up...")
+            os.chdir('..')
+            os.chdir('..')
+            try:
+                bs4l = glob.glob("b*/")
+                for number,letter in enumerate(bs4l):
+                    shutil.rmtree(letter, ignore_errors=True)
+            except:
+                pass
+        time.sleep(2)
         exit()
     if "xavi_filetype_mod" in os.getcwd():
-        os.mkdir("types")
+        try:
+            os.mkdir("types")
+        except:
+            pass
         os.chdir("types")
         runTotal("https://github.com/SimLoads/xavi/tree/filetype-mod/types")
     if not os.path.exists("xavi_filetype_mod"):
         os.mkdir("xavi_filetype_mod")
         os.chdir("xavi_filetype_mod")
         runTotal("https://github.com/SimLoads/xavi/tree/filetype-mod")
+    else:
+        os.chdir("xavi_filetype_mod")
+        runTotal("https://github.com/SimLoads/xavi/tree/filetype-mod")
     #exit()
+global tImport
 try:
     from bs4 import *
+    tImport = True
 except:
     print("Downloading BeautifulSoup4 locally...")
+    tImport = False
     try:
         url = 'https://files.pythonhosted.org/packages/1d/5d/3260694a59df0ec52f8b4883f5d23b130bc237602a1411fa670eae12351e/beautifulsoup4-4.7.1-py3-none-any.whl'  
         urllib.request.urlretrieve(url, 'bs4.whl')
@@ -72,10 +93,16 @@ except:
         try:
             from bs4 import *
         except:
-            print("Download failed. Please download bs4 manually and try again.")
+            print("There was an error during download.")
+            print("Check your connection, or try and install bs4 manually using")
+            print("pip install bs4")
+            input()
             exit()
     except:
-        print("Unexpected error.")
+        print("There was an error during download.")
+        print("Check your connection, or try and install bs4 manually using")
+        print("pip install bs4")
+        input()
         exit()
 def runTotal(rep):
     html_page = urllib.request.urlopen(rep)
