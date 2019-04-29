@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Installer
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 042519.4x0003
+Version:: 042919.4x0004
 
 /NOTES/
 
@@ -48,16 +48,39 @@ def unpack(branch,files,rep,trees):
             print("Failed to download: " + ((letter.split('/')[-1])))
     if "types" in os.getcwd():
         print("Installed Xavi.")
+        os.chdir('..')
+        os.chdir('..')
         if tImport == False:
             print("Cleaning up...")
-            os.chdir('..')
-            os.chdir('..')
             try:
                 bs4l = glob.glob("b*/")
                 for number,letter in enumerate(bs4l):
                     shutil.rmtree(letter, ignore_errors=True)
             except:
                 pass
+        try:
+            import numpy
+        except:
+            if not os.path.exists("numpy"):
+                print("Fetching required packages...")
+                getNumpy()
+            else:
+                print("No need to redownload packages.")
+                print("Xavi updated successfully.")
+                time.sleep(2)
+                exit()
+        try:
+            import matplotlib.pyplot
+        except:
+            if not os.path.exists("matplotlib"):
+                print("Fetching required packages...")
+                getNumpy()
+            else:
+                print("No need to redownload packages.")
+                print("Xavi updated successfully.")
+                time.sleep(2)
+                exit()
+        print("Xavi installed successfully.")
         time.sleep(2)
         exit()
     if "xavi_filetype_mod" in os.getcwd():
@@ -121,4 +144,45 @@ def runTotal(rep):
         trees.append(link.get('href'))
     branch = ((files[0]).split('/'))[-2]
     unpack(branch,files,rep,trees)
+def getNumpy():
+    url = "https://files.pythonhosted.org/packages/4e/9d/c129d78e6b942303b762ccfdf1f8339de80c5e6021b14ef0c99ec5bdc6aa/numpy-1.16.3-cp37-cp37m-win_amd64.whl"
+    print("Got Numpy URL...")
+    urllib.request.urlretrieve(url, 'numpy.whl')
+    print("Saved wheel in: " + os.getcwd())
+    os.rename(((glob.glob("*.whl"))[0]), (((glob.glob("*.whl"))[0]) + ".zip"))
+    zipx = zipfile.ZipFile(((glob.glob("*.zip"))[0]), 'r')
+    print("Extracting...")
+    zipx.extractall(os.getcwd())
+    zipx.close()
+    getMatlib()
+def getMatlib():
+    url = "https://files.pythonhosted.org/packages/13/ca/8ae32601c1ebe482b140981eedadf8a927de719ca4cecc550b12a4b78f2d/matplotlib-3.0.3-cp37-cp37m-win_amd64.whl"
+    print("Got Matplotlib URL...")
+    urllib.request.urlretrieve(url, 'matlib.whl')
+    print("Saved wheel in: " + os.getcwd())
+    os.rename(((glob.glob("*.whl"))[0]), (((glob.glob("*.whl"))[0]) + ".zip"))
+    zipx = zipfile.ZipFile(((glob.glob("*.zip"))[0]), 'r')
+    print("Extracting...")
+    zipx.extractall(os.getcwd())
+    zipx.close()
+    print("Cleaning up...")
+    packageCleanup()
+def packageCleanup():
+    zips, whls, pth, dsti = glob.glob("*.whl.zip"), glob.glob("*.whl"), glob.glob("*.pth"), glob.glob("*dist-info/")
+    print(zips)
+    print(whls)
+    print(pth)
+    print(dsti)
+    for number,letter in enumerate(zips):
+        os.remove(letter)
+    for number,letter in enumerate(whls):
+        os.remove(letter)
+    for number,letter in enumerate(pth):
+        os.remove(letter)
+    for number,letter in enumerate(dsti):
+        shutil.rmtree(letter, ignore_errors=True)
+    print("Installed Xavi.")
+    time.sleep(2)
+    exit()
+
 runTotal("https://github.com/SimLoads/xavi")
