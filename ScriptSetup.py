@@ -46,6 +46,8 @@ def unpack(branch,files,rep,trees):
                 backupwrite.close()
         except:
             print("Failed to download: " + ((letter.split('/')[-1])))
+    if "matplotlib" in os.getcwd():
+        packageCleanup()
     if "types" in os.getcwd():
         os.chdir('..')
         os.chdir('..')
@@ -169,6 +171,8 @@ def getMatlib():
     getMatlibDeps()
 def getMatlibDeps():
     depurls = [
+    #Six
+    "https://files.pythonhosted.org/packages/73/fb/00a976f728d0d1fecfe898238ce23f502a721c0ac0ecfedb80e0d88c64e9/six-1.12.0-py2.py3-none-any.whl",
     #Pyparsing Works
     "https://files.pythonhosted.org/packages/dd/d9/3ec19e966301a6e25769976999bd7bbe552016f0d32b577dc9d63d2e0c49/pyparsing-2.4.0-py2.py3-none-any.whl", 
     #libpng
@@ -199,7 +203,11 @@ def getMatlibDeps():
         print("Extracting " + nameStr + "...")
         zipx.extractall(os.getcwd())
     zipx.close()
-    packageCleanup()
+    print("Modifying required packages...")
+    packageModify()
+def packageModify():
+    os.remove("fontconfig_pattern.py")
+    runTotal("https://github.com/SimLoads/xavi/tree/matplotlib-mod")
 def packageCleanup():
     for x in range (2):
         zips, whls, pth, dsti = glob.glob("*.whl.zip"), glob.glob("*.whl"), glob.glob("*.pth"), glob.glob("*dist-info/")
