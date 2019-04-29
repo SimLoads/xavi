@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Installer
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 042919.4x0004
+Version:: 042919.4x0005
 
 /NOTES/
 
@@ -47,7 +47,6 @@ def unpack(branch,files,rep,trees):
         except:
             print("Failed to download: " + ((letter.split('/')[-1])))
     if "types" in os.getcwd():
-        print("Installed Xavi.")
         os.chdir('..')
         os.chdir('..')
         if tImport == False:
@@ -165,22 +164,67 @@ def getMatlib():
     print("Extracting...")
     zipx.extractall(os.getcwd())
     zipx.close()
-    print("Cleaning up...")
+    print("Fetching matplotlib dependancies")
+    os.chdir('matplotlib')
+    getMatlibDeps()
+def getMatlibDeps():
+    depurls = [
+    #Pyparsing Works
+    "https://files.pythonhosted.org/packages/dd/d9/3ec19e966301a6e25769976999bd7bbe552016f0d32b577dc9d63d2e0c49/pyparsing-2.4.0-py2.py3-none-any.whl", 
+    #libpng
+    "https://downloads.sourceforge.net/project/libpng/libpng16/1.6.37/lpng1637.zip", 
+    #Freetype
+    "https://downloads.sourceforge.net/project/freetype/freetype2/2.10.0/ft2100.zip", 
+    #Kiwisolver Works
+    "https://files.pythonhosted.org/packages/c6/ea/e5474014a13ab2dcb5056608e0716c600c3d8a8bcffb10ed55ccd6a42eb0/kiwisolver-1.1.0-cp37-none-win_amd64.whl", 
+    #Dateutil Works
+    "https://files.pythonhosted.org/packages/41/17/c62faccbfbd163c7f57f3844689e3a78bae1f403648a6afb1d0866d87fbb/python_dateutil-2.8.0-py2.py3-none-any.whl", 
+    #Cycler works
+    "https://files.pythonhosted.org/packages/f7/d2/e07d3ebb2bd7af696440ce7e754c59dd546ffe1bbe732c8ab68b9c834e61/cycler-0.10.0-py2.py3-none-any.whl"]
+    for number, letter in enumerate(depurls):
+        urlSplit = letter.split('/')
+        if ".zip" in letter[5:]:
+            nameStr = (urlSplit[-1])
+            needWheel = False
+        else:
+            nameStr = (urlSplit[-1] + ".whl")
+            needWheel = True
+        urllib.request.urlretrieve(letter, nameStr)
+        if needWheel == True:
+            os.rename(nameStr, (nameStr + ".zip"))
+        if needWheel == True:
+            zipx = zipfile.ZipFile((nameStr + ".zip"), 'r')
+        else:
+            zipx = zipfile.ZipFile((nameStr), 'r')
+        print("Extracting " + nameStr + "...")
+        zipx.extractall(os.getcwd())
+    zipx.close()
     packageCleanup()
 def packageCleanup():
-    zips, whls, pth, dsti = glob.glob("*.whl.zip"), glob.glob("*.whl"), glob.glob("*.pth"), glob.glob("*dist-info/")
-    print(zips)
-    print(whls)
-    print(pth)
-    print(dsti)
-    for number,letter in enumerate(zips):
-        os.remove(letter)
-    for number,letter in enumerate(whls):
-        os.remove(letter)
-    for number,letter in enumerate(pth):
-        os.remove(letter)
-    for number,letter in enumerate(dsti):
-        shutil.rmtree(letter, ignore_errors=True)
+    for x in range (2):
+        zips, whls, pth, dsti = glob.glob("*.whl.zip"), glob.glob("*.whl"), glob.glob("*.pth"), glob.glob("*dist-info/")
+        for number,letter in enumerate(zips):
+            print("Removing " + letter + "...")
+            try:
+                os.remove(letter)
+            except:
+                pass
+        for number,letter in enumerate(whls):
+            print("Removing " + letter + "...")
+            try:
+                os.remove(letter)
+            except:
+                pass
+        for number,letter in enumerate(pth):
+            print("Removing " + letter + "...")
+            try:
+                os.remove(letter)
+            except:
+                pass
+        for number,letter in enumerate(dsti):
+            print("Removing " + letter + "...")
+            shutil.rmtree(letter, ignore_errors=True)
+        os.chdir('..')
     print("Installed Xavi.")
     time.sleep(2)
     exit()
