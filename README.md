@@ -1,6 +1,7 @@
 # Xavi
 Read the ongoing notes [here](http://bit.do/xavinotes)
 
+## Xavi is currently in development. Please check back later!
 
 Welcome to Xavi!
 Please ensure you use the installer (ScriptSetup.py) to install Xavi properly.  
