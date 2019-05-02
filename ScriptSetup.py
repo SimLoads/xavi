@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Installer
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 042919.4x0005
+Version:: 050219.4x0006
 
 /NOTES/
 
