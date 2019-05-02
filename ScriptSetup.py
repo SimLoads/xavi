@@ -19,6 +19,7 @@ import glob
 import zipfile
 import time
 import shutil
+import platform
 def unpack(branch,files,rep,trees):
     for number,letter in enumerate(files):
         fileName = (((letter.split('/')[-1])).lower())
@@ -151,7 +152,40 @@ def getNumpy():
     urllib.request.urlretrieve(url, 'numpy.whl')
     print("Saved wheel in: " + os.getcwd())
     os.rename(((glob.glob("*.whl"))[0]), (((glob.glob("*.whl"))[0]) + ".zip"))
-    zipx = zipfile.ZipFile(((glob.glob("*.zip"))[0]), 'r')
+    zipx = zipfile.ZipFile("numpy.whl.zip", 'r')
+    print("Extracting...")
+    zipx.extractall(os.getcwd())
+    zipx.close()
+    getSciPy()
+def getSciPy():
+    url = "https://files.pythonhosted.org/packages/58/f0/d00c0e01e077da883f030af3ff5ce653a0e9e4786f83faa89a6e18c98612/scipy-1.2.1-cp37-cp37m-win_amd64.whl"
+    print("Got SciPy URL...")
+    urllib.request.urlretrieve(url, 'scipy.whl')
+    print("Saved wheel in: " + os.getcwd())
+    os.rename(((glob.glob("*.whl"))[0]), (((glob.glob("*.whl"))[0]) + ".zip"))
+    zipx = zipfile.ZipFile("scipy.whl.zip", 'r')
+    print("Extracting...")
+    zipx.extractall(os.getcwd())
+    zipx.close()
+    getSounddevice()
+def getSounddevice():
+    url = "https://files.pythonhosted.org/packages/7f/15/fd6d923adccc64d2d93fcffc245bb2471a2509bb2905a89c4fc772ce4e35/sounddevice-0.3.13-py2.py3.cp26.cp27.cp32.cp33.cp34.cp35.cp36.cp37.cp38.pp27.pp32.pp33.pp34.pp35.pp36-none-win_amd64.whl"
+    print("Got SoundDevice URL...")
+    urllib.request.urlretrieve(url, 'sndv.whl')
+    print("Saved wheel in: " + os.getcwd())
+    os.rename(((glob.glob("*.whl"))[0]), (((glob.glob("*.whl"))[0]) + ".zip"))
+    zipx = zipfile.ZipFile("sndv.whl.zip", 'r')
+    print("Extracting...")
+    zipx.extractall(os.getcwd())
+    zipx.close()
+    getCffi()
+def getCffi():
+    url = 'https://files.pythonhosted.org/packages/2f/ad/9722b7752fdd88c858be57b47f41d1049b5fb0ab79caf0ab11407945c1a7/cffi-1.12.3-cp37-cp37m-win_amd64.whl'
+    print("Got Cffi URL...")
+    urllib.request.urlretrieve(url, 'cffi.whl')
+    print("Saved wheel in: " + os.getcwd())
+    os.rename(((glob.glob("*.whl"))[0]), (((glob.glob("*.whl"))[0]) + ".zip"))
+    zipx = zipfile.ZipFile("cffi.whl.zip", 'r')
     print("Extracting...")
     zipx.extractall(os.getcwd())
     zipx.close()
@@ -162,7 +196,7 @@ def getMatlib():
     urllib.request.urlretrieve(url, 'matlib.whl')
     print("Saved wheel in: " + os.getcwd())
     os.rename(((glob.glob("*.whl"))[0]), (((glob.glob("*.whl"))[0]) + ".zip"))
-    zipx = zipfile.ZipFile(((glob.glob("*.zip"))[0]), 'r')
+    zipx = zipfile.ZipFile("matlib.whl.zip", 'r')
     print("Extracting...")
     zipx.extractall(os.getcwd())
     zipx.close()
@@ -237,4 +271,14 @@ def packageCleanup():
     time.sleep(2)
     exit()
 
+print("Preparing setup...")
+if not "windows" in (platform.platform()).lower():
+    print("Xavi is currently only supported on Windows.")
+    print("Linux support is in development :)")
+    input()
+    exit()
+if not sys.version_info[0] < 3.4:
+    print("Python 3.5 and above is required to use Xavi.")
+    input()
+    exit()
 runTotal("https://github.com/SimLoads/xavi")
