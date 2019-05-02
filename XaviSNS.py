@@ -38,13 +38,27 @@ def help():
     print("XaviSNS Help\n")
     print("  -h : Displays this")
     print("  -c : Specify funciton to call")
-    print("  -f : Specify file to use")
+    print("  :: Available funcitons:")
+    print("    :: audtest")
+    print("       -f : File to use (str)")
+    print("    :: testwave")
+    print("       -f : Name of output (str)")
+    print("       -r : Frequency (int)")
+    print("       -l : Length in seconds (int)")
 
-def run(functionToCall, filename=''):
+def run(fTC, filename='', length='', frq=''):
     try:
-        result = getattr(Xavi, functionToCall)(filename)
+        if fTC == "audtest":
+            Xavi.audtest(filename)
+        if fTC == "testwave":
+            Xavi.testwave(frq, length, filename)
+        if fTC == "readwav":
+            Xavi.readwav(filename)
+        else:
+            error("call", fTC)
     except AttributeError:
-        error("call", functionToCall)
+        error("import")
+        exit()
     exit()
 
 if __name__ == "__main__":
@@ -54,16 +68,33 @@ if __name__ == "__main__":
     if '-h' in lj:
         help()
         exit()
+
     if '-c' in lj:
-        functionToCall = ((lj.split('-c', 1)[1]).split('-', 1)[0]).replace(' ','')
-        if len(functionToCall) == 0:
+        fTC = ((lj.split('-c', 1)[1]).split('-', 1)[0]).replace(' ','')
+        if len(fTC) == 0:
             error("argument")
     else:
         error("argument")
+    
     if '-f' in lj:
         filename = ((lj.split('-f', 1)[1]).split('-', 1)[0]).replace(' ','')
         if len(filename) == 0:
             error("argument")
     else:
-        filename='null'
-    run(functionToCall, filename)
+        filename='exmp'
+
+    if '-r' in lj:
+        frq = ((lj.split('-r', 1)[1]).split('-', 1)[0]).replace(' ','')
+        if len(filename) == 0:
+            error("argument")
+    else:
+        frq='1000'
+
+    if '-l' in lj:
+        length = ((lj.split('-l', 1)[1]).split('-', 1)[0]).replace(' ','')
+        if len(filename) == 0:
+            error("argument")
+    else:
+        length='1'
+
+    run(fTC, filename, frq, length)
