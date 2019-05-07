@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Stop and Swap System
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 050719.1x0005
+Version:: 050719.1x0006
 
 /NOTES/
 
@@ -52,19 +52,22 @@ def help():
     print("        --second_device : Second output device (int)")
     print("      : Note - do not specify device to auto select default.")
 
-def run(fTC, filename='', length='', frq='', dtype='', device1='', device2=''):
-    try:
-        if fTC == "audtest":
-            Xavi.audtest(filename)
-        if fTC == "testwave":
-            Xavi.testwave(frq, length, filename)
-        if fTC == "livebridge":
-            Xavi.livebridge(filename, dtype, device1, device2)
+def run(fTC, filename='',frq='', length='', dtype='', device1='', device2=''):
+    # try:
+    if fTC == "audtest":
+        Xavi.audtest(filename)
+    if fTC == "testwave":
+        Xavi.testwave(frq, length, filename)
+    if fTC == "livebridge":
+        if length == "devcheck":
+            Xavi.liveDeviceCheck()
         else:
-            error("call", fTC)
-    except AttributeError:
-        error("import")
-        exit()
+            Xavi.livebridge(filename, dtype, device1, device2)
+    else:
+        error("call", fTC)
+# except AttributeError:
+    error("import")
+    exit()
     exit()
 
 if __name__ == "__main__":
@@ -91,35 +94,38 @@ if __name__ == "__main__":
 
     if '-r' in lj:
         frq = ((lj.split('-r', 1)[1]).split('-', 1)[0]).replace(' ','')
-        if len(filename) == 0:
+        if len(frq) == 0:
             error("argument")
     else:
         frq='1000'
 
     if '-l' in lj:
-        length = ((lj.split('-l', 1)[1]).split('-', 1)[0]).replace(' ','')
-        if len(filename) == 0:
-            error("argument")
+        if fTC == 'livebridge':
+            length='devcheck'
+        else:
+            length = ((lj.split('-l', 1)[1]).split('-', 1)[0]).replace(' ','')
+            if len(length) == 0:
+                error("argument")
     else:
         length='1'
 
     if '--first_device' in lj:
         device1 = ((lj.split('--first_device', 1)[1]).split('-', 1)[0]).replace(' ','')
-        if len(filename) == 0:
+        if len(device1) == 0:
             error("argument")
     else:
         device1='blank'
 
     if '--second_device' in lj:
         device2 = ((lj.split('--second_device', 1)[1]).split('-', 1)[0]).replace(' ','')
-        if len(filename) == 0:
+        if len(device2) == 0:
             error("argument")
     else:
         device2='blank'
 
     if '-b' in lj:
         dtype = ((lj.split('-b', 1)[1]).split('-', 1)[0]).replace(' ','')
-        if len(filename) == 0:
+        if len(dtype) == 0:
             error("argument")
     else:
         dtype='int16'

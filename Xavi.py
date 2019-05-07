@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Main Tools
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 050719.1x0005
+Version:: 050719.1x0006
 
 /NOTES/
 
@@ -98,6 +98,7 @@ def testwave(length, freq, fname):
     wav_file.setparams((nchannels, sampwidth, int(srate), nframes, comptype, compname))
     for s in sine_wave:
         wav_file.writeframes(struct.pack('h', int(s*amp)))
+    exit()
 
 def convNumPy(filename, dtype):
     import sys
@@ -160,3 +161,17 @@ def livebridge(filename, dtype, device1, device2):
             player2 = threading.Thread(target=threaded_player, args=((convNumPy(filename, dtype)[0]),filename,device2,(convNumPy(filename, dtype)[1])))
             player.start()
             player2.start()
+
+def liveDeviceCheck():
+    print("In development.")
+    exit()
+    import sounddevice as sd
+    print("When selecting a device, use the numerical ID.")
+    for number,letter in enumerate(sd.query_devices()):
+        lVals = [v for v in letter.values() ]
+        for number,letter in enumerate(lVals):
+            if letter not in ('speaker', 'headphones', 'output'):
+                continue
+            print(letter)
+        print(number, letter)
+    exit()
