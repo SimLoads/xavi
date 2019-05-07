@@ -4,18 +4,42 @@ Xavi Standard Audio Service
 Main Tools
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 050219.1x0003
+Version:: 050719.1x0005
 
 /NOTES/
+
+//
 
 y(t) = A * sin(2 * pi * f * t)
 A is the amplitude
 f is the frequency.
 t is our sample. Since we need to convert it to digital, we will divide it by the sampling rate.
 
+//
+
 fontconfig needs path insert current directory
 
+//
+
+import threading
+import time
+
+def my_job():
+	print(threading.current_thread().name)
+
+t=threading.Thread(target=my_job)
+t.start()
+
+t1=threading.Thread(target=my_job)
+t1.start()
+
+t2=threading.Thread(target=my_job)
+t2.start()
+
+//
 '''
+import warnings
+warnings.filterwarnings("ignore")
 def audtest(filename):
     import sys
     sys.path.insert(0, 'xavi_filetype_mod')
@@ -32,7 +56,7 @@ def audtest(filename):
     except AttributeError:
         print(filename + " is not supported. ")
         return()
-    if "audio" in fType:
+    if "wav" in fType:
         print(filename + " is a supported format.")
         return()
     else:
@@ -74,18 +98,13 @@ def testwave(length, freq, fname):
     wav_file.setparams((nchannels, sampwidth, int(srate), nframes, comptype, compname))
     for s in sine_wave:
         wav_file.writeframes(struct.pack('h', int(s*amp)))
-        
-def readwav(filename):
-    import os
+
+def convNumPy(filename, dtype):
     import sys
+    import os
     sys.path.insert(0, os.getcwd())
     import numpy as np
-    import sounddevice as sd
-    import time
     from scipy.io import wavfile
-    os.chdir('matplotlib')
-    import matplotlib.pyplot as plt
-    os.chdir('..')
     try:
         file = wavfile.read(filename)
     except ValueError:
@@ -95,11 +114,49 @@ def readwav(filename):
     except FileNotFoundError:
         print("File not found!")
         exit()
-    waveArray = np.array(file[1],dtype=np.int16)
-    lengthArray = (len(waveArray))
-    hiF = (np.amax(waveArray))
-    loF = (np.amin(waveArray))
-    sd.play(waveArray, 44100)
+    try:
+        waveArray = np.array(file[1],dtype=dtype)
+    except:
+        print("dtype : " + dtype + " is invalid.")
+        exit()
+    smlprate = file[0]
+    return(waveArray,smlprate)
+
+def threaded_player(waveArray,filename,device,smplrate):
+    import sounddevice as sd
+    import time
+    import warnings
+    import datetime
+    warnings.filterwarnings("ignore")
+    print("Playing " + filename + " on device " + str(device[-1]))
+    try:
+        sd.play(waveArray, smplrate, device=int(device))
+    except:
+        try:
+            sd.play(waveArray, device=int(device[-1]))
+        except:
+            print("Device error!")
+            exit()
+    timewait = int(((len(waveArray)) / smplrate))
+    minswait = str(datetime.timedelta(seconds=timewait))
+    print("File legnth: " + minswait)
     input()
     sd.stop()
 
+def livebridge(filename, dtype, device1, device2):
+    import os
+    import threading
+    import sys
+    import sounddevice
+    if device1 == 'blank':
+        player = threading.Thread(target=threaded_player, args=((convNumPy(filename, dtype)[0]),filename,(sounddevice.default.device),(convNumPy(filename, dtype)[1])))
+        player.start()
+    else:
+        if device2 == 'blank':
+            player = threading.Thread(target=threaded_player, args=((convNumPy(filename, dtype)[0]),filename,device1,(convNumPy(filename, dtype)[1])))
+            player.start()
+        else:
+            player = threading.Thread(target=threaded_player, args=((convNumPy(filename, dtype)[0]),filename,device1,(convNumPy(filename, dtype)[1])))
+            player2 = threading.Thread(target=threaded_player, args=((convNumPy(filename, dtype)[0]),filename,device2,(convNumPy(filename, dtype)[1])))
+            player.start()
+            player2.start()

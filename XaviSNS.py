@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Stop and Swap System
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 050219.1x0003
+Version:: 050719.1x0005
 
 /NOTES/
 
@@ -45,15 +45,21 @@ def help():
     print("       -f : Name of output (str)")
     print("       -r : Frequency (int)")
     print("       -l : Length in seconds (int)")
+    print("     :: livebridge")
+    print("        -f : File to use (str)")
+    print("        -d : Select dtype (str) (not recommended)")
+    print("        --first_device : First output device (int)")
+    print("        --second_device : Second output device (int)")
+    print("      : Note - do not specify device to auto select default.")
 
-def run(fTC, filename='', length='', frq=''):
+def run(fTC, filename='', length='', frq='', dtype='', device1='', device2=''):
     try:
         if fTC == "audtest":
             Xavi.audtest(filename)
         if fTC == "testwave":
             Xavi.testwave(frq, length, filename)
-        if fTC == "readwav":
-            Xavi.readwav(filename)
+        if fTC == "livebridge":
+            Xavi.livebridge(filename, dtype, device1, device2)
         else:
             error("call", fTC)
     except AttributeError:
@@ -97,4 +103,25 @@ if __name__ == "__main__":
     else:
         length='1'
 
-    run(fTC, filename, frq, length)
+    if '--first_device' in lj:
+        device1 = ((lj.split('--first_device', 1)[1]).split('-', 1)[0]).replace(' ','')
+        if len(filename) == 0:
+            error("argument")
+    else:
+        device1='blank'
+
+    if '--second_device' in lj:
+        device2 = ((lj.split('--second_device', 1)[1]).split('-', 1)[0]).replace(' ','')
+        if len(filename) == 0:
+            error("argument")
+    else:
+        device2='blank'
+
+    if '-b' in lj:
+        dtype = ((lj.split('-b', 1)[1]).split('-', 1)[0]).replace(' ','')
+        if len(filename) == 0:
+            error("argument")
+    else:
+        dtype='int16'
+
+    run(fTC, filename, frq, length, dtype, device1, device2)
