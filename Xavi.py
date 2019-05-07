@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Main Tools
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 050719.1x0006
+Version:: 050719.1x0007
 
 /NOTES/
 
@@ -63,10 +63,7 @@ def audtest(filename):
         print("Unsupported format.")
 
 def testwave(length, freq, fname):
-    import os
-    import numpy as np
-    import wave
-    import struct
+    import os, numpy as np, wave, struct
     os.chdir('matplotlib')
     # import matplotlib.pyplot as plt
     # frequency is the number of times a wave repeats a second
@@ -101,8 +98,7 @@ def testwave(length, freq, fname):
     exit()
 
 def convNumPy(filename, dtype):
-    import sys
-    import os
+    import sys, os
     sys.path.insert(0, os.getcwd())
     import numpy as np
     from scipy.io import wavfile
@@ -124,10 +120,8 @@ def convNumPy(filename, dtype):
     return(waveArray,smlprate)
 
 def threaded_player(waveArray,filename,device,smplrate):
-    import sounddevice as sd
-    import time
-    import warnings
-    import datetime
+    import sounddevice as sd, time, warnings, datetime, sys, select
+
     warnings.filterwarnings("ignore")
     print("Playing " + filename + " on device " + str(device[-1]))
     try:
@@ -145,33 +139,37 @@ def threaded_player(waveArray,filename,device,smplrate):
     sd.stop()
 
 def livebridge(filename, dtype, device1, device2):
-    import os
-    import threading
-    import sys
-    import sounddevice
+    import os, threading, sys, sounddevice
     if device1 == 'blank':
+        print("Fallback to default device...")
         player = threading.Thread(target=threaded_player, args=((convNumPy(filename, dtype)[0]),filename,(sounddevice.default.device),(convNumPy(filename, dtype)[1])))
         player.start()
     else:
         if device2 == 'blank':
+            print("Using first device...")
             player = threading.Thread(target=threaded_player, args=((convNumPy(filename, dtype)[0]),filename,device1,(convNumPy(filename, dtype)[1])))
             player.start()
         else:
+            print("Using both devices...")
             player = threading.Thread(target=threaded_player, args=((convNumPy(filename, dtype)[0]),filename,device1,(convNumPy(filename, dtype)[1])))
             player2 = threading.Thread(target=threaded_player, args=((convNumPy(filename, dtype)[0]),filename,device2,(convNumPy(filename, dtype)[1])))
             player.start()
             player2.start()
 
 def liveDeviceCheck():
-    print("In development.")
-    exit()
     import sounddevice as sd
-    print("When selecting a device, use the numerical ID.")
+    recList = []
+    print("When selecting a device, use the device number.")
+    print("Xavi thinks the following devices will work best for output:")
+    print("")
     for number,letter in enumerate(sd.query_devices()):
-        lVals = [v for v in letter.values() ]
-        for number,letter in enumerate(lVals):
-            if letter not in ('speaker', 'headphones', 'output'):
-                continue
-            print(letter)
-        print(number, letter)
+        lVals = [k for k in letter.values() ]
+        if number < 10:
+            deviceName = lVals[0]
+            if "head" in str(deviceName).lower():
+                print("Device " + str(number) + ": " + deviceName)
+            if "speakers" in str(deviceName).lower():
+                print("Device " + str(number) + ": " + deviceName)
+        else:
+            continue
     exit()

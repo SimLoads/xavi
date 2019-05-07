@@ -53,21 +53,21 @@ def help():
     print("      : Note - do not specify device to auto select default.")
 
 def run(fTC, filename='',frq='', length='', dtype='', device1='', device2=''):
-    # try:
-    if fTC == "audtest":
-        Xavi.audtest(filename)
-    if fTC == "testwave":
-        Xavi.testwave(frq, length, filename)
-    if fTC == "livebridge":
-        if length == "devcheck":
-            Xavi.liveDeviceCheck()
+    try:
+        if fTC == "audtest":
+            Xavi.audtest(filename)
+        if fTC == "testwave":
+            Xavi.testwave(frq, length, filename)
+        if fTC == "livebridge":
+            if length == "devcheck":
+                Xavi.liveDeviceCheck()
+            else:
+                Xavi.livebridge(filename, dtype, device1, device2)
         else:
-            Xavi.livebridge(filename, dtype, device1, device2)
-    else:
-        error("call", fTC)
-# except AttributeError:
-    error("import")
-    exit()
+            error("call", fTC)
+    except AttributeError:
+        error("import")
+        exit()
     exit()
 
 if __name__ == "__main__":
