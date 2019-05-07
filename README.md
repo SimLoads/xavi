@@ -1,6 +1,18 @@
 # Xavi
 Read the ongoing notes [here](http://bit.do/xavinotes)  
 [![codebeat badge](https://codebeat.co/badges/b60dea8d-cf99-481e-9af5-9b87d22dd4a2)](https://codebeat.co/projects/github-com-simloads-xavi-master)
+
+## If you encounter the error "ImportError: DLL Load Failed..."
+
+If you hit     
+```
+from ._ufuncs import *
+  File "_ufuncs.pyx", line 1, in init scipy.special._ufuncs
+ImportError: DLL load failed: The specified module could not be found.
+```
+Please let me know. As far as I'm aware this is an issue out of my control, caused by, get this, the make of your CPU. Intel machines shouldn't have this problem and I'm working on a fix for AMD based PCs. Raise an issue if you get this, I need to know if it's just me.
+
+
 ## Xavi is currently in development. Please check back later!
 
 Welcome to Xavi!
