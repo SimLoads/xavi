@@ -13,8 +13,7 @@ ImportError: DLL load failed: The specified module could not be found.
 Please let me know. As far as I'm aware this is an issue out of my control, caused by, get this, the make of your CPU. Intel machines shouldn't have this problem and I'm working on a fix for AMD based PCs. Raise an issue if you get this, I need to know if it's just me.
 
 
-## Xavi is currently in development. Some features are still in development!
-
+## Xavi is currently in development. Some features probably won't work!
 Welcome to Xavi!
 Please ensure you use the installer (ScriptSetup.py) to install Xavi properly.  
 That tool will ensure all the required files are downloaded and put in the right place.  
