@@ -8,6 +8,7 @@ Please ensure you use the installer (ScriptSetup.py) to install Xavi properly.
 That tool will ensure all the required files are downloaded and put in the right place.  
 
 Xavi makes use of and can download [Numpy](https://www.numpy.org/) and [Matplotlib](https://matplotlib.org/) by itself, as well as the following packages: 
+
 [Filetype](https://pypi.org/project/filetype)  
 [Six](https://pypi.org/project/six/)  
 [Pyparsing](https://pypi.org/project/pyparsing/)  
@@ -17,4 +18,5 @@ Xavi makes use of and can download [Numpy](https://www.numpy.org/) and [Matplotl
 [Dateutil](https://pypi.org/project/python-dateutil/)  
 [Cycler](https://pypi.org/project/Cycler/)  
 
-Use ScriptSetup or, for a more graphical feel, XaviInstaller to ensure these are set up correctly.
+Use ScriptSetup to ensure these are set up correctly.
+
