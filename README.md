@@ -13,11 +13,12 @@ ImportError: DLL load failed: The specified module could not be found.
 Please let me know. As far as I'm aware this is an issue out of my control, caused by, get this, the make of your CPU. Intel machines shouldn't have this problem and I'm working on a fix for AMD based PCs. Raise an issue if you get this, I need to know if it's just me.
 
 
-## Xavi is currently in development. Please check back later!
+## Xavi is currently in development. Some features are still in development!
 
 Welcome to Xavi!
 Please ensure you use the installer (ScriptSetup.py) to install Xavi properly.  
 That tool will ensure all the required files are downloaded and put in the right place.  
+
 
 Xavi makes use of and can download [Numpy](https://www.numpy.org/) and [Matplotlib](https://matplotlib.org/) by itself, as well as the following packages: 
 
@@ -30,5 +31,4 @@ Xavi makes use of and can download [Numpy](https://www.numpy.org/) and [Matplotl
 [Dateutil](https://pypi.org/project/python-dateutil/)  
 [Cycler](https://pypi.org/project/Cycler/)  
 
-Use ScriptSetup to ensure these are set up correctly.
 
