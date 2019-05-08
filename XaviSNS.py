@@ -4,13 +4,14 @@ Xavi Standard Audio Service
 Stop and Swap System
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 050719.1x0006
+Version:: 050819.1x0007
 
 /NOTES/
 
 
 
 '''
+global isLength
 import sys
 import os
 def error(type, param=""):
@@ -33,24 +34,26 @@ try:
     import Xavi
 except:
     error("import")
-
+Xavi.processorCheck()
 def help():
-    print("XaviSNS Help\n")
+    print("XaviSNS Help\nParameters marked with a star are required")
     print("  -h : Displays this")
-    print("  -c : Specify funciton to call")
+    print(" *-c : Specify funciton to call")
     print("  :: Available funcitons:")
     print("    :: audtest")
-    print("       -f : File to use (str)")
+    print("      *-f : File to use (str)")
     print("    :: testwave")
-    print("       -f : Name of output (str)")
+    print("      *-f : Name of output (str)")
     print("       -r : Frequency (int)")
     print("       -l : Length in seconds (int)")
     print("     :: livebridge")
-    print("        -f : File to use (str)")
-    print("        -d : Select dtype (str) (not recommended)")
+    print("        -l : Return suggested devices to use")
+    print("           :: use -l all to see all available devices")
+    print("       *-f : File to use (str)")
+    print("        -d : Select dtype (str) (not recommended, will use default)")
     print("        --first_device : First output device (int)")
     print("        --second_device : Second output device (int)")
-    print("      : Note - do not specify device to auto select default.")
+    print("           :: Do not specify device to auto select default.")
 
 def run(fTC, filename='',frq='', length='', dtype='', device1='', device2=''):
     try:
@@ -59,8 +62,8 @@ def run(fTC, filename='',frq='', length='', dtype='', device1='', device2=''):
         if fTC == "testwave":
             Xavi.testwave(frq, length, filename)
         if fTC == "livebridge":
-            if length == "devcheck":
-                Xavi.liveDeviceCheck()
+            if isLength:
+                Xavi.liveDeviceCheck(length)
             else:
                 Xavi.livebridge(filename, dtype, device1, device2)
         else:
@@ -101,7 +104,10 @@ if __name__ == "__main__":
 
     if '-l' in lj:
         if fTC == 'livebridge':
-            length='devcheck'
+            isLength = True
+            length = ((lj.split('-l', 1)[1]).split('-', 1)[0]).replace(' ','')
+            if len(length) == 0:
+                length='devcheck'
         else:
             length = ((lj.split('-l', 1)[1]).split('-', 1)[0]).replace(' ','')
             if len(length) == 0:
