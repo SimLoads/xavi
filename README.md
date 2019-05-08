@@ -2,7 +2,7 @@
 Read the ongoing notes [here](http://bit.do/xavinotes)  
 [![codebeat badge](https://codebeat.co/badges/b60dea8d-cf99-481e-9af5-9b87d22dd4a2)](https://codebeat.co/projects/github-com-simloads-xavi-master)
 
-## If you encounter the error "ImportError: DLL Load Failed..."
+### If you encounter the error "ImportError: DLL Load Failed..."
 
 If you hit     
 ```
@@ -18,9 +18,23 @@ Welcome to Xavi!
 Please ensure you use the installer (ScriptSetup.py) to install Xavi properly.  
 That tool will ensure all the required files are downloaded and put in the right place.  
 
+## What can Xavi do?
+Xavi is designed with simplicity in mind, and will do its best to automate as many processes as possible. Here's a small feature list that you can use right now: 
++ NO DEPENDENCIES LEFT BEHIND - Automatic install of packages needed by Xavi (handled by installer) 
++ Sending an input file to dual outputs of choice (working on live microphone dual outputs and more than 2 outputs at a time)
++ Generate test tones of a certain length and frequency
++ Identify if a file is supported or not
++ Powerful command line input processing with parameters and non order-specific delimiters
++ Can just play music regularly too.
++ Simple updating of code
 
-Xavi makes use of and can download [Numpy](https://www.numpy.org/) and [Matplotlib](https://matplotlib.org/) by itself, as well as the following packages: 
+Xavi makes use of and can download the following packages: 
 
+[BeautifulSoup4](https://www.pypi.org/project/beautifulsoup4/)
+[Sounddevice](https://www.pypi.org/project/sounddevice/)
+[SciPy](https://www.scipy.org/)
+[NumPy](https://www.numpy.org/)
+[Matplotlib](https://matplotlib.org/)
 [Filetype](https://pypi.org/project/filetype)  
 [Six](https://pypi.org/project/six/)  
 [Pyparsing](https://pypi.org/project/pyparsing/)  
