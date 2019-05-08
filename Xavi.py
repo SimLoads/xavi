@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Main Tools
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 050719.1x0007
+Version:: 050819.1x0008
 
 /NOTES/
 
@@ -38,9 +38,19 @@ t2.start()
 
 //
 '''
+def processorCheck():
+    import platform
+    if "amd" in (str(platform.processor())).lower():
+        print("Sorry! There's been an error.")
+        print("AMD Machines are currently not supported.")
+        print("Check the GitHub for more info.")
+        exit()
+    else:
+        return()
 import warnings
 warnings.filterwarnings("ignore")
 def audtest(filename):
+    processorCheck()
     import sys
     sys.path.insert(0, 'xavi_filetype_mod')
     try:
@@ -62,7 +72,8 @@ def audtest(filename):
     else:
         print("Unsupported format.")
 
-def testwave(length, freq, fname):
+def testwave(freq, length, fname):
+    processorCheck()
     import os, numpy as np, wave, struct
     os.chdir('matplotlib')
     # import matplotlib.pyplot as plt
@@ -95,9 +106,11 @@ def testwave(length, freq, fname):
     wav_file.setparams((nchannels, sampwidth, int(srate), nframes, comptype, compname))
     for s in sine_wave:
         wav_file.writeframes(struct.pack('h', int(s*amp)))
+    print("Saved " + length + " second(s) tone to " + file)
     exit()
 
 def convNumPy(filename, dtype):
+    processorCheck()
     import sys, os
     sys.path.insert(0, os.getcwd())
     import numpy as np
@@ -120,6 +133,7 @@ def convNumPy(filename, dtype):
     return(waveArray,smlprate)
 
 def threaded_player(waveArray,filename,device,smplrate):
+    processorCheck()
     import sounddevice as sd, time, warnings, datetime, sys, select
 
     warnings.filterwarnings("ignore")
@@ -129,8 +143,11 @@ def threaded_player(waveArray,filename,device,smplrate):
     except:
         try:
             sd.play(waveArray, device=int(device[-1]))
-        except:
+        except sd.PortAudioError:
             print("Device error!")
+            print("This is an input device.")
+            if (input("Enter [e] to raise. ")).lower() == "e":
+                raise
             exit()
     timewait = int(((len(waveArray)) / smplrate))
     minswait = str(datetime.timedelta(seconds=timewait))
@@ -139,6 +156,7 @@ def threaded_player(waveArray,filename,device,smplrate):
     sd.stop()
 
 def livebridge(filename, dtype, device1, device2):
+    processorCheck()
     import os, threading, sys, sounddevice
     if device1 == 'blank':
         print("Fallback to default device...")
@@ -156,20 +174,24 @@ def livebridge(filename, dtype, device1, device2):
             player.start()
             player2.start()
 
-def liveDeviceCheck():
+def liveDeviceCheck(lType):
+    processorCheck()
     import sounddevice as sd
     recList = []
-    print("When selecting a device, use the device number.")
-    print("Xavi thinks the following devices will work best for output:")
-    print("")
-    for number,letter in enumerate(sd.query_devices()):
-        lVals = [k for k in letter.values() ]
-        if number < 10:
-            deviceName = lVals[0]
-            if "head" in str(deviceName).lower():
-                print("Device " + str(number) + ": " + deviceName)
-            if "speakers" in str(deviceName).lower():
-                print("Device " + str(number) + ": " + deviceName)
-        else:
-            continue
+    if lType == "all":
+        print(sd.query_devices())
+    else:
+        print("When selecting a device, use the device number.")
+        print("Xavi thinks the following devices will work best for output:")
+        print("")
+        for number,letter in enumerate(sd.query_devices()):
+            lVals = [k for k in letter.values() ]
+            if number < 10:
+                deviceName = lVals[0]
+                if "head" in str(deviceName).lower():
+                    print("Device " + str(number) + ": " + deviceName)
+                if "speakers" in str(deviceName).lower():
+                    print("Device " + str(number) + ": " + deviceName)
+            else:
+                continue
     exit()
