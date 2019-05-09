@@ -30,11 +30,11 @@ Xavi is designed with simplicity in mind, and will do its best to automate as ma
 
 Xavi makes use of and can download the following packages: 
 
-[BeautifulSoup4](https://www.pypi.org/project/beautifulsoup4/)
-[Sounddevice](https://www.pypi.org/project/sounddevice/)
-[SciPy](https://www.scipy.org/)
-[NumPy](https://www.numpy.org/)
-[Matplotlib](https://matplotlib.org/)
+[BeautifulSoup4](https://www.pypi.org/project/beautifulsoup4/)  
+[Sounddevice](https://www.pypi.org/project/sounddevice/)  
+[SciPy](https://www.scipy.org/)  
+[NumPy](https://www.numpy.org/)  
+[Matplotlib](https://matplotlib.org/)  
 [Filetype](https://pypi.org/project/filetype)  
 [Six](https://pypi.org/project/six/)  
 [Pyparsing](https://pypi.org/project/pyparsing/)  
