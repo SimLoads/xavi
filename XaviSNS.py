@@ -135,5 +135,9 @@ if __name__ == "__main__":
             error("argument")
     else:
         dtype='int16'
-
+    try:
+        if isLength:
+            print("")
+    except:
+        isLength = False
     run(fTC, filename, frq, length, dtype, device1, device2)
