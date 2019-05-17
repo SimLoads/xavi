@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Main Tools
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 050819.1x0008
+Version:: 051719.1x0009
 
 /NOTES/
 
@@ -101,12 +101,15 @@ def testwave(freq, length, fname):
     compname="not compressed"
     nchannels=1
     sampwidth=2
+    print("Calculating...")
     sine_wave = [np.sin(2 * np.pi * fr * x/srate) for x in range(nsam)]
     wav_file=wave.open(file, 'w')
     wav_file.setparams((nchannels, sampwidth, int(srate), nframes, comptype, compname))
+    print("Generating...")
+    print("This should take about " + str(length) + " Seconds")
     for s in sine_wave:
         wav_file.writeframes(struct.pack('h', int(s*amp)))
-    print("Saved " + length + " second(s) tone to " + file)
+    print("Saved " + str(length) + " second(s) tone to " + file)
     exit()
 
 def convNumPy(filename, dtype):
@@ -135,7 +138,6 @@ def convNumPy(filename, dtype):
 def threaded_player(waveArray,filename,device,smplrate):
     processorCheck()
     import sounddevice as sd, time, warnings, datetime, sys, select
-
     warnings.filterwarnings("ignore")
     print("Playing " + filename + " on device " + str(device[-1]))
     try:
@@ -158,6 +160,8 @@ def threaded_player(waveArray,filename,device,smplrate):
 def livebridge(filename, dtype, device1, device2):
     processorCheck()
     import os, threading, sys, sounddevice
+    if filename == 'livebridge':
+        liveDeviceCheck('')
     if device1 == 'blank':
         print("Fallback to default device...")
         player = threading.Thread(target=threaded_player, args=((convNumPy(filename, dtype)[0]),filename,(sounddevice.default.device),(convNumPy(filename, dtype)[1])))
