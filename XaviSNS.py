@@ -26,7 +26,8 @@ def error(type, param=""):
     else:
         print("-- null")
     exit()
-sys.path.insert(0, (os.getcwd))
+os.chdir('xavi')
+sys.path.insert(0, os.getcwd())
 try:
     import Xavi
 except:
