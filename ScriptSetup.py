@@ -4,25 +4,30 @@ Xavi Standard Audio Service
 Installer
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 050219.4x0006
+Version:: 051719.4x0008
 
 /NOTES/
+
+Fix timeout function
 
 
 
 '''
-import sys
-import os
-import urllib.request
-import re
-import glob
-import zipfile
-import time
-import shutil
-import platform
+import sys,os,urllib.request,re,glob,zipfile,time,shutil,platform,threading
+global timeoutTimer 
+timeoutTimer = False
+def timeout():
+    print("..")
+    if timeoutTimer == False:
+        print("This seems to be taking a long time.")
+        print("Please try again later.")
+        time.sleep(1)
+        exit()
 def unpack(branch,files,rep,trees):
     for number,letter in enumerate(files):
         fileName = (((letter.split('/')[-1])).lower())
+        if fileName == "xavisns.py":
+            os.chdir('..')
         if fileName in [".gitignore","license","readme.md", "scriptsetup.py"]:
             continue
         if not os.path.exists(fileName):
@@ -47,6 +52,10 @@ def unpack(branch,files,rep,trees):
                 backupwrite.close()
         except:
             print("Failed to download: " + ((letter.split('/')[-1])))
+        if fileName == "xavisns.py":
+            os.chdir('xavi')
+    nextStep()
+def nextStep():
     if "matplotlib" in os.getcwd():
         packageCleanup()
     if "types" in os.getcwd():
@@ -94,12 +103,9 @@ def unpack(branch,files,rep,trees):
         runTotal("https://github.com/SimLoads/xavi/tree/filetype-mod/types")
     if not os.path.exists("xavi_filetype_mod"):
         os.mkdir("xavi_filetype_mod")
-        os.chdir("xavi_filetype_mod")
-        runTotal("https://github.com/SimLoads/xavi/tree/filetype-mod")
-    else:
-        os.chdir("xavi_filetype_mod")
-        runTotal("https://github.com/SimLoads/xavi/tree/filetype-mod")
-    #exit()
+    os.chdir("xavi_filetype_mod")
+    runTotal("https://github.com/SimLoads/xavi/tree/filetype-mod")
+
 global tImport
 try:
     from bs4 import *
@@ -133,7 +139,14 @@ except:
         input()
         exit()
 def runTotal(rep):
-    html_page = urllib.request.urlopen(rep)
+    t = threading.Timer(12.0, timeout)
+    try:
+        html_page = urllib.request.urlopen(rep)
+    except:
+        print("Connection error!")
+        print("Ensure you're connected to the internet.")
+        input()
+        exit()
     linksplit = rep.split('/')
     username = linksplit[3]
     repnm = linksplit[4]
@@ -145,6 +158,7 @@ def runTotal(rep):
     for link in soup.findAll('a', attrs={'href': re.compile("^/" + username + "/" + repnm + "/tree")}):
         trees.append(link.get('href'))
     branch = ((files[0]).split('/'))[-2]
+    timeoutTimer = True
     unpack(branch,files,rep,trees)
 def getNumpy():
     url = "https://files.pythonhosted.org/packages/4e/9d/c129d78e6b942303b762ccfdf1f8339de80c5e6021b14ef0c99ec5bdc6aa/numpy-1.16.3-cp37-cp37m-win_amd64.whl"
@@ -279,6 +293,18 @@ if not "windows" in (platform.platform()).lower():
     exit()
 if not sys.version_info[0] < 3.4:
     print("Python 3.5 and above is required to use Xavi.")
+    input()
+    exit()
+if not os.path.exists('xavi'):
+    os.mkdir('xavi')
+os.chdir('xavi')
+print("Installing xavi in: " + os.getcwd())
+print("This may take some time.")
+total, used, free = shutil.disk_usage(os.getcwd())
+if not (free > 314572800):
+    print()
+    print("Insufficient space to install Xavi!")
+    print("Free up some space and try again.")
     input()
     exit()
 runTotal("https://github.com/SimLoads/xavi")
