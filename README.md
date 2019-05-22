@@ -1,6 +1,6 @@
 # Xavi
 Read the ongoing notes [here](http://bit.do/xavinotes)  
-[![codebeat badge](https://codebeat.co/badges/b60dea8d-cf99-481e-9af5-9b87d22dd4a2)](https://codebeat.co/projects/github-com-simloads-xavi-master)
+[![codebeat badge](https://codebeat.co/badges/1d581795-499a-4b58-9ba4-f51ab8f48f31)](https://codebeat.co/projects/github-com-simloads-xavi-master)
 
 ### If you encounter the error "ImportError: DLL Load Failed..."
 
