@@ -13,10 +13,9 @@ ImportError: DLL load failed: The specified module could not be found.
 Please let me know. As far as I'm aware this is an issue out of my control, caused by, get this, the make of your CPU. Intel machines shouldn't have this problem and I'm working on a fix for AMD based PCs. Raise an issue if you get this, I need to know if it's just me.
 
 
-## Xavi is currently in development. Some features probably won't work!
-Welcome to Xavi!
-Please ensure you use the installer (ScriptSetup.py) to install Xavi properly.  
-That tool will ensure all the required files are downloaded and put in the right place.  
+### Xavi is currently in development. Some features probably won't work!
+#### Currently, Xavi.exe doesn't do anything. Don't rely on it for actual usage.
+
 
 ## What can Xavi do?
 Xavi is designed with simplicity in mind, and will do its best to automate as many processes as possible. Here's a small feature list that you can use right now: 
@@ -27,6 +26,34 @@ Xavi is designed with simplicity in mind, and will do its best to automate as ma
 + Powerful command line input processing with parameters and non order-specific delimiters
 + Can just play music regularly too.
 + Simple updating of code
+
+## Getting started with Xavi
+To start, download either 'ScriptSetup.py' or 'XaviInstaller.exe'. They both do the same thing, but sometimes a GUI is nice to look at.  
+You're going to need > Python 3.5 installed on your PATH to use XaviInstaller.exe, else you can just point Python to ScriptSetup and it should install just fine.  
+
+
+When the install is complete, you can use Xavi by running Xavi.exe or by sending it commands directly. To make things easier for external programs, Xavi is never accessed directly. You'll need to send scripts to the _Stop 'N' Swap System_, which you'll find under XaviSNS.py  
+
+Here's an example of a command:
+```
+XaviSNS.py -c testwave -f test1 -l 1 -r 1000
+```
+Here, we're calling the 'testwave' function which generates a tone. We're saving the output to a file called 'test1', with a 1 second length and frequency of 1000 Hz. If you need help with parameters, simply type:  
+```
+XaviSNS.py -h
+```
+
+
+Here's another example. If we want to send the sound of 'test1.wav' to both my headphones and my speakers, we can use Livebridge. To begin, let's take a look at my available devices.
+```
+XaviSNS.py -c livebridge
+```
+Passing the livebridge function with no arguments returns a list of recommended devices. In my case, my speakers are device '4' and my headphones are device '6'. I can then send these, along with the file, to livebridge.
+```
+XaviSNS.py -c livebridge -f test1.wav -fd 4 -sd 6
+```
+This plays the sound to both devices simultaneously. 
+
 
 Xavi makes use of and can download the following packages: 
 
