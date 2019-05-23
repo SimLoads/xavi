@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Installer
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 052219.4x0009
+Version:: 052319.4x0010
 
 /NOTES/
 
@@ -26,33 +26,33 @@ def timeout():
 def unpack(branch,files,rep,trees):
     for number,letter in enumerate(files):
         fileName = (((letter.split('/')[-1])).lower())
-        if fileName == ["xavisns.py","xavi.exe"]:
+        if fileName in ["xavisns.py","xavi.exe"]:
             os.chdir('..')
-        if fileName in [".gitignore","license","readme.md", "scriptsetup.py"]:
+        if fileName in [".gitignore","license","readme.md", "scriptsetup.py", "xaviinstaller.exe"]:
             continue
         if not os.path.exists(fileName):
-            print("Downloading " + (letter.split('/')[-1]) + "...")
+            print("Downloading " + fileName + "...")
         else:
-            print("Updating " + (letter.split('/')[-1]) + "...")
+            print("Updating " + fileName + "...")
         letterfix = (letter.split('/'))
         del letterfix[3]
         letterfix = '/'.join(letterfix)
         try:
             data = ((urllib.request.urlopen(urllib.request.Request("https://raw.githubusercontent.com" + letterfix))).read()).decode()
+            with open(((letter.split('/')[-1])), 'w', newline='') as writer:
+                    writer.write(str(data))
+                    writer.close()
         except:
             try:
-                downfile = ("https://raw.githubusercontent.com" + letterfix)
+                letterfix_comp = letterfix.split('/')
+                letterfix_comp.insert(3, 'raw')
+                letterfix = '/'.join(letterfix_comp)
+                downfile = ("https://github.com" + letterfix)
                 filenm = ((letter.split('/')[-1]))
                 urllib.request.urlretrieve(downfile, filenm)
             except:
-                print("Failed to download: " + ((letter.split('/')[-1])))
-        try:
-            with open(((letter.split('/')[-1])), 'w', newline='') as backupwrite:
-                backupwrite.write(str(data))
-                backupwrite.close()
-        except:
-            print("Failed to download: " + ((letter.split('/')[-1])))
-        if fileName == ["xavisns.py","xavi.exe"]:
+                print("Failed to download: " + fileName)
+        if fileName in ["xavisns.py","xavi.exe"]:
             os.chdir('xavi')
     nextStep()
 def nextStep():
