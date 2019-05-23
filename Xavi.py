@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Main Tools
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 051719.1x0009
+Version:: 052219.1x0010
 
 /NOTES/
 
@@ -75,10 +75,14 @@ def audtest(filename):
 def testwave(freq, length, fname):
     processorCheck()
     import os, numpy as np, wave, struct
-    os.chdir('matplotlib')
-    # import matplotlib.pyplot as plt
-    # frequency is the number of times a wave repeats a second
+    try:
+        os.chdir('matplotlib')
+    except:
+        print("Installation Error")
+        exit()
     os.chdir('..')
+    if('xavi' in os.getcwd()):
+        os.chdir('..')
     # Frequency
     try:
         fr = int(freq)
@@ -91,9 +95,7 @@ def testwave(freq, length, fname):
     except:
         print("Invalid argument: " + length)
         exit()
-    # The sampling rate of the analog to digital convert
     srate = 48000.0
-    # Amplitude
     amp = 18000
     file = (fname + ".wav")
     nframes=nsam

@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Stop and Swap System
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 051719.1x0009
+Version:: 052219.1x0010
 
 /NOTES/
 
@@ -54,12 +54,15 @@ if __name__ == "__main__":
         help='Specify second device (Certain functions only)')
     ag = inps.parse_args()
     if (ag.c) == 'audtest':
+        os.chdir('xavi')
         Xavi.audtest(ag.f)
         exit()
     if (ag.c) == 'livebridge':
+        os.chdir('xavi')
         Xavi.livebridge(ag.f, ag.d, ag.fd, ag.sd)
         exit()
     if (ag.c) == 'testwave':
+        os.chdir('xavi')
         if ag.f == 'livebridge':
             fnm = 'example'
         else:
