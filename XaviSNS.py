@@ -4,14 +4,13 @@ Xavi Standard Audio Service
 Stop and Swap System
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 052219.1x0010
+Version:: 060319.1x0011
 
 /NOTES/
 
 
 
 '''
-global isLength
 import sys
 import os
 def error(type, param=""):
