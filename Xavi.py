@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Main Tools
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 052219.1x0010
+Version:: 061019.1x0011
 
 /NOTES/
 
@@ -162,6 +162,8 @@ def threaded_player(waveArray,filename,device,smplrate):
 def livebridge(filename, dtype, device1, device2):
     processorCheck()
     import os, threading, sys, sounddevice
+    if ("xavi" in os.getcwd()):
+        os.chdir('..')
     if filename == 'livebridge':
         liveDeviceCheck('')
     if device1 == 'blank':
