@@ -17,7 +17,8 @@ from functools import lru_cache
 import re
 import os
 import sys
-sys.path.insert(0, os.getcwd())
+sys.path.insert(0, 'xavi/matplotlib')
+sys.path.insert(0, 'matplotlib')
 from pyparsing import (Literal, ZeroOrMore, Optional, Regex, StringEnd,
                        ParseException, Suppress)
 
