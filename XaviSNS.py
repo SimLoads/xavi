@@ -74,7 +74,7 @@ if __name__ == "__main__":
         exit()
     if ag.c == "tempo":
         os.chdir("xavi")
-        Xavi.freqIsolate(ag.f)
+        Xavi.tempo(ag.f)
     if ag.c == "toMono":
         Xavi.toMono(ag.f)
     else:
