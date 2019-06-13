@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Main Tools
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 061019.1x0011
+Version:: 061319.1x0012
 
 /NOTES/
 
@@ -49,6 +49,7 @@ def processorCheck():
         return()
 import warnings
 warnings.filterwarnings("ignore")
+
 def audtest(filename):
     processorCheck()
     import sys
@@ -202,4 +203,50 @@ def liveDeviceCheck(lType):
                     print("Device " + str(number) + ": " + deviceName)
             else:
                 continue
+    exit()
+
+def tempo(data):
+    print("In development")
+    exit()
+    import numpy as np
+    import scipy.io.wavfile as scpiow
+    import scipy.signal as scps
+    import matplotlib.pyplot as plt
+    import os
+
+    #plt.style.use('style/elegant.mplstyle')
+    os.chdir('..')
+    sr,aud=scpiow.read(data)
+    aud = np.mean(aud, axis=1)
+    N = aud.shape[0]
+    L = N / sr
+    M = 2096
+    R = ("{0:.2f}".format(L))
+    print('Audio length: %s Seconds' % R)
+    spectrum = np.fft.fft(aud, axis=0)[:M // 2 + 1:-1]
+    # spectrum = np.abs(spectrum)
+    # freqs, times, Sx = scps.spectrogram(aud, fs=sr, window='hanning',
+    #                                     nperseg=2096, noverlap=M - 100,
+    #                                     detrend=False, scaling='spectrum')
+    # f, ax = plt.subplots(figsize=(4.8, 2.4))
+    # ax.pcolormesh(times, freqs / 1000, 10 * np.log10(Sx), cmap='viridis')
+    # ax.set_ylabel('Frequency [kHz]')
+    # ax.set_xlabel('Time [s]');
+    plt.show()
+    exit()
+
+def toMono(data):
+    print("In development.")
+    exit()
+    import numpy as np
+    import scipy.io.wavfile as scpiow
+    import scipy.signal as scps
+    import os
+    try:
+        sr,aud=scpiow.read(data)
+    except FileNotFoundError:
+        print("File not found!")
+        exit()
+    aud = np.mean(aud, axis=1) 
+    scpiow.write(str(data + '_mono.wav'), sr, aud)   
     exit()

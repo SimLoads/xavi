@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Stop and Swap System
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 060319.1x0011
+Version:: 061319.1x0012
 
 /NOTES/
 
@@ -13,6 +13,10 @@ Version:: 060319.1x0011
 '''
 import sys
 import os
+
+funcList = '[livebridge/testwave/tempo/toMono]'
+
+
 def error(type, param=""):
     print("An error occured.")
     print("- Reason given:")
@@ -38,7 +42,7 @@ if __name__ == "__main__":
     import argparse
     inps = argparse.ArgumentParser(description='Xavi Standard Audio Service // Stop n Swap')
     inps.add_argument('-c', type=str, metavar='function', required=True, 
-            help='Function to call [audtest/livebridge/testwave]')
+            help=('Function to call ' + funcList))
     inps.add_argument('-f', type=str, metavar='file', required=False, default='livebridge',
         help='Name of file')
     inps.add_argument('-l', type=int, metavar='length', required=False, default='1',
@@ -68,6 +72,11 @@ if __name__ == "__main__":
             fnm = ag.f
         Xavi.testwave(ag.r, ag.l, fnm)
         exit()
+    if ag.c == "tempo":
+        os.chdir("xavi")
+        Xavi.freqIsolate(ag.f)
+    if ag.c == "toMono":
+        Xavi.toMono(ag.f)
     else:
         error("call", ag.c)
     exit()
