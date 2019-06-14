@@ -5,7 +5,7 @@ Read the ongoing notes [here](http://bit.do/xavinotes)
 ### Welcome, Git Cloners!
 If you're cloning this repo, ensure you use
 ```
-git clone https://github.com/SimLoads/xavi/--branch setup --single-branch [<folder>]
+git clone https://github.com/SimLoads/xavi/ --branch setup --single-branch
 ```
 to prevent cloning of random things that you don't need.
 
