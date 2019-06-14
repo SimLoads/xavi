@@ -2,6 +2,13 @@
 Read the ongoing notes [here](http://bit.do/xavinotes)  
 [![codebeat badge](https://codebeat.co/badges/1d581795-499a-4b58-9ba4-f51ab8f48f31)](https://codebeat.co/projects/github-com-simloads-xavi-master)
 
+### Welcome, Git Cloners!
+If you're cloning this repo, ensure you use
+```
+git clone https://github.com/SimLoads/xavi/--branch setup --single-branch [<folder>]
+```
+to prevent cloning of random things that you don't need.
+
 ### If you encounter the error "ImportError: DLL Load Failed..."
 
 If you hit     
