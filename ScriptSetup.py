@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Installer
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 052319.4x0010
+Version:: 071019.4x0011
 
 /NOTES/
 
@@ -26,9 +26,10 @@ def timeout():
 def unpack(branch,files,rep,trees):
     for number,letter in enumerate(files):
         fileName = (((letter.split('/')[-1])).lower())
-        if fileName in ["xavisns.py","xavi.exe"]:
+        if fileName in ["xavisns.py","xavi.exe",'xavishell.py']:
             os.chdir('..')
         if fileName in [".gitignore","license","readme.md", "scriptsetup.py", "xaviinstaller.exe"]:
+            print("Ignored %s" % fileName)
             continue
         if not os.path.exists(fileName):
             print("Downloading " + fileName + "...")
@@ -52,7 +53,7 @@ def unpack(branch,files,rep,trees):
                 urllib.request.urlretrieve(downfile, filenm)
             except:
                 print("Failed to download: " + fileName)
-        if fileName in ["xavisns.py","xavi.exe"]:
+        if fileName in ["xavisns.py","xavi.exe",'xavishell.py']:
             os.chdir('xavi')
     nextStep()
 def nextStep():
