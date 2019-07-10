@@ -5,7 +5,7 @@ Shell Service
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
 '''
-Version = '070519.5x0001'
+Version = '071019.5x0002'
 '''
 /NOTES/
 
@@ -195,5 +195,5 @@ if __name__ == "__main__":
     else:
         with open('.xaviconf', 'w') as xfc:
             xfc.write(defaultItems)
-            confItems = defaultItems
+            confItems = defaultItems.split(" >< ")
     startupCheck()
