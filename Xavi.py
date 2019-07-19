@@ -4,7 +4,8 @@ Xavi Standard Audio Service
 Main Tools
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 061319.1x0012
+Version:: 071919.1x0013
+Release Version:: 0.0.1
 
 /NOTES/
 

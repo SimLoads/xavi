@@ -1,10 +1,12 @@
+
 '''
 
 Xavi Standard Audio Service
 Stop and Swap System
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 061319.1x0012
+Version:: 071919.2x0013
+Release Version:: 0.0.1
 
 /NOTES/
 
