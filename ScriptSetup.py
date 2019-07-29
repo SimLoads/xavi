@@ -4,26 +4,16 @@ Xavi Standard Audio Service
 Installer
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 071919.4x0012
-Release Version:: 0.0.1
+Version:: 072919.4x0014
+Release Version:: 0.0.2
 
 /NOTES/
 
-Fix timeout function
 
 
 
 '''
 import sys,os,urllib.request,re,glob,zipfile,time,shutil,platform,threading
-global timeoutTimer 
-timeoutTimer = False
-def timeout():
-    print("..")
-    if timeoutTimer == False:
-        print("This seems to be taking a long time.")
-        print("Please try again later.")
-        time.sleep(1)
-        exit()
 def unpack(branch,files,rep,trees):
     for number,letter in enumerate(files):
         fileName = (((letter.split('/')[-1])).lower())
@@ -58,6 +48,14 @@ def unpack(branch,files,rep,trees):
             os.chdir('xavi')
     nextStep()
 def nextStep():
+    mList = [
+        "https://files.pythonhosted.org/packages/4e/9d/c129d78e6b942303b762ccfdf1f8339de80c5e6021b14ef0c99ec5bdc6aa/numpy-1.16.3-cp37-cp37m-win_amd64.whl",
+        "https://files.pythonhosted.org/packages/ff/4f/d8e286d94e51e4c8eb18cf41caec6ac354698056894192e51f3343b6beac/PyAudio-0.2.11-cp36-cp36m-win_amd64.whl",
+        "https://files.pythonhosted.org/packages/58/f0/d00c0e01e077da883f030af3ff5ce653a0e9e4786f83faa89a6e18c98612/scipy-1.2.1-cp37-cp37m-win_amd64.whl",
+        "https://files.pythonhosted.org/packages/7f/15/fd6d923adccc64d2d93fcffc245bb2471a2509bb2905a89c4fc772ce4e35/sounddevice-0.3.13-py2.py3.cp26.cp27.cp32.cp33.cp34.cp35.cp36.cp37.cp38.pp27.pp32.pp33.pp34.pp35.pp36-none-win_amd64.whl",
+        'https://files.pythonhosted.org/packages/2f/ad/9722b7752fdd88c858be57b47f41d1049b5fb0ab79caf0ab11407945c1a7/cffi-1.12.3-cp37-cp37m-win_amd64.whl',
+        "https://files.pythonhosted.org/packages/13/ca/8ae32601c1ebe482b140981eedadf8a927de719ca4cecc550b12a4b78f2d/matplotlib-3.0.3-cp37-cp37m-win_amd64.whl"
+    ]
     if "matplotlib" in os.getcwd():
         packageCleanup()
     if "types" in os.getcwd():
@@ -76,7 +74,7 @@ def nextStep():
         except:
             if not os.path.exists("numpy"):
                 print("Fetching required packages...")
-                getNumpy()
+                mainRepeat(mList)
             else:
                 print("No need to redownload packages.")
                 print("Xavi updated successfully.")
@@ -87,7 +85,7 @@ def nextStep():
         except:
             if not os.path.exists("matplotlib"):
                 print("Fetching required packages...")
-                getNumpy()
+                mainRepeat(mList)
             else:
                 print("No need to redownload packages.")
                 print("Xavi updated successfully.")
@@ -141,7 +139,6 @@ except:
         input()
         exit()
 def runTotal(rep):
-    t = threading.Timer(12.0, timeout)
     try:
         html_page = urllib.request.urlopen(rep)
     except:
@@ -160,63 +157,19 @@ def runTotal(rep):
     for link in soup.findAll('a', attrs={'href': re.compile("^/" + username + "/" + repnm + "/tree")}):
         trees.append(link.get('href'))
     branch = ((files[0]).split('/'))[-2]
-    timeoutTimer = True
     unpack(branch,files,rep,trees)
-def getNumpy():
-    url = "https://files.pythonhosted.org/packages/4e/9d/c129d78e6b942303b762ccfdf1f8339de80c5e6021b14ef0c99ec5bdc6aa/numpy-1.16.3-cp37-cp37m-win_amd64.whl"
-    print("Got Numpy URL...")
-    urllib.request.urlretrieve(url, 'numpy.whl')
-    print("Saved wheel in: " + os.getcwd())
-    os.rename(((glob.glob("*.whl"))[0]), (((glob.glob("*.whl"))[0]) + ".zip"))
-    zipx = zipfile.ZipFile("numpy.whl.zip", 'r')
-    print("Extracting...")
-    zipx.extractall(os.getcwd())
-    zipx.close()
-    getSciPy()
-def getSciPy():
-    url = "https://files.pythonhosted.org/packages/58/f0/d00c0e01e077da883f030af3ff5ce653a0e9e4786f83faa89a6e18c98612/scipy-1.2.1-cp37-cp37m-win_amd64.whl"
-    print("Got SciPy URL...")
-    urllib.request.urlretrieve(url, 'scipy.whl')
-    print("Saved wheel in: " + os.getcwd())
-    os.rename(((glob.glob("*.whl"))[0]), (((glob.glob("*.whl"))[0]) + ".zip"))
-    zipx = zipfile.ZipFile("scipy.whl.zip", 'r')
-    print("Extracting...")
-    zipx.extractall(os.getcwd())
-    zipx.close()
-    getSounddevice()
-def getSounddevice():
-    url = "https://files.pythonhosted.org/packages/7f/15/fd6d923adccc64d2d93fcffc245bb2471a2509bb2905a89c4fc772ce4e35/sounddevice-0.3.13-py2.py3.cp26.cp27.cp32.cp33.cp34.cp35.cp36.cp37.cp38.pp27.pp32.pp33.pp34.pp35.pp36-none-win_amd64.whl"
-    print("Got SoundDevice URL...")
-    urllib.request.urlretrieve(url, 'sndv.whl')
-    print("Saved wheel in: " + os.getcwd())
-    os.rename(((glob.glob("*.whl"))[0]), (((glob.glob("*.whl"))[0]) + ".zip"))
-    zipx = zipfile.ZipFile("sndv.whl.zip", 'r')
-    print("Extracting...")
-    zipx.extractall(os.getcwd())
-    zipx.close()
-    getCffi()
-def getCffi():
-    url = 'https://files.pythonhosted.org/packages/2f/ad/9722b7752fdd88c858be57b47f41d1049b5fb0ab79caf0ab11407945c1a7/cffi-1.12.3-cp37-cp37m-win_amd64.whl'
-    print("Got Cffi URL...")
-    urllib.request.urlretrieve(url, 'cffi.whl')
-    print("Saved wheel in: " + os.getcwd())
-    os.rename(((glob.glob("*.whl"))[0]), (((glob.glob("*.whl"))[0]) + ".zip"))
-    zipx = zipfile.ZipFile("cffi.whl.zip", 'r')
-    print("Extracting...")
-    zipx.extractall(os.getcwd())
-    zipx.close()
-    getMatlib()
-def getMatlib():
-    url = "https://files.pythonhosted.org/packages/13/ca/8ae32601c1ebe482b140981eedadf8a927de719ca4cecc550b12a4b78f2d/matplotlib-3.0.3-cp37-cp37m-win_amd64.whl"
-    print("Got Matplotlib URL...")
-    urllib.request.urlretrieve(url, 'matlib.whl')
-    print("Saved wheel in: " + os.getcwd())
-    os.rename(((glob.glob("*.whl"))[0]), (((glob.glob("*.whl"))[0]) + ".zip"))
-    zipx = zipfile.ZipFile("matlib.whl.zip", 'r')
-    print("Extracting...")
-    zipx.extractall(os.getcwd())
-    zipx.close()
-    print("Fetching matplotlib dependancies")
+def mainRepeat(mList):
+    for number,letter in enumerate(mList):
+        url = letter
+        name = (url.split('/'))[6]
+        print("Got URL of package: " + name)
+        urllib.request.urlretrieve(url, ('%s.whl' % name))
+        print("Saved wheel in: " + os.getcwd())
+        os.rename(((glob.glob("*.whl"))[0]), (((glob.glob("*.whl"))[0]) + ".zip"))
+        zipx = zipfile.ZipFile(("%s.whl.zip" % name), 'r')
+        print("Extracting...")
+        zipx.extractall(os.getcwd())
+        zipx.close()
     os.chdir('matplotlib')
     getMatlibDeps()
 def getMatlibDeps():
@@ -251,7 +204,13 @@ def getMatlibDeps():
         else:
             zipx = zipfile.ZipFile((nameStr), 'r')
         print("Extracting " + nameStr + "...")
-        zipx.extractall(os.getcwd())
+        try:
+            zipx.extractall(os.getcwd())
+        except:
+            print("Something went wrong.")
+            print("Try running again from a shell.")
+            input()
+            exit()
     zipx.close()
     print("Modifying required packages...")
     packageModify()
