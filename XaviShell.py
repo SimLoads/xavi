@@ -5,7 +5,7 @@ Shell Service
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
 '''
-Version = '073019.5x0003'
+Version = '073019.5x0004'
 '''
 Release Version:: 0.0.1
 
@@ -49,7 +49,7 @@ def xs_cmFormulate(npa,lv,pr):
         command = []
         command.append(str(confItems[0] +' XaviSNS.py -c livebridge '))
         fname, ind, dty, dv1, dv2 = npa[0], npa[1], npa[2], npa[3], npa[4]
-        if len(fname) < 0: command.append(str('-f ' + fname + " "))
+        if len(fname) > 0: command.append(str('-f ' + fname + " "))
         if not ind == '':
             command.append(str((Args["ind"]) + ind + " "))
         if not dty == '':
@@ -119,6 +119,7 @@ def force():
     direct = input("direct|>")
     run = ("python XaviSNS.py " + direct)
     os.system(run)
+
 def arg(out, dcLookup, process):
     import Xavi
     nPosArgs = []
@@ -134,41 +135,42 @@ def arg(out, dcLookup, process):
         getattr(sys.modules[__name__], out)(nPosArgs, sigvars, process)
 
 def takeInput():
-    while True:
-        try:
-            print("")
-            process = input("xavi|>")
-
-            # If command is recognized
-            if process in cmList:
-                dcLookup = (cmList[process])
-                # If command is for Xavi
-                if process in xs_reqPosArgs:
-                    if process == "livebridge":
-                        lv_method = input("method >> ")
-                        if lv_method == "device":
-                            os.system(confItems[0] +" XaviSNS.py -c livebridge")
-                            continue
-                    out = 'xs_cmFormulate'
-                    arg(out, dcLookup, process)
-                elif "query" in process:
-                    com = input("command >> ")
-                    query(com)
-                # Else 
-                else:
-                    if process == "exit":
-                        exit()
-                    (dcLookup())
-                    continue
-
-            # Unknown command
+    try:
+        print("")
+        process = input("xavi|>")
+        # If command is recognized
+        if process in cmList:
+            dcLookup = (cmList[process])
+            # If command is for Xavi
+            if process in xs_reqPosArgs:
+                xaviArgs(dcLookup, process)
+                takeInput()
+            elif "query" in process:
+                com = input("command >> ")
+                query(com)
+            # Else 
             else:
-                errorHandle(("Unrecognized Input: %s" % process))
-                continue
-        except EOFError:
-            exit()
-        except KeyboardInterrupt:
-            exit()
+                if process == "exit":
+                    exit()
+                (dcLookup())
+                takeInput()
+        # Unknown command
+        else:
+            errorHandle(("Unrecognized Input: %s" % process))
+            takeInput()
+    except EOFError:
+        exit()
+    except KeyboardInterrupt:
+        exit()
+def xaviArgs(dcLookup, process):
+    if process == "livebridge":
+        if input("method >> ") == "device":
+            os.system(confItems[0] +" XaviSNS.py -c livebridge")
+            return()
+        else:
+            out = 'xs_cmFormulate'
+            arg(out, dcLookup, process)
+            return
 cmList = {
     "exit": exit,
     "reboot": reboot,
