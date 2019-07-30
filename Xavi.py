@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Main Tools
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 073019.1x0014
+Version:: 073019.1x0015
 Release Version:: 0.0.1
 
 /NOTES/
@@ -186,6 +186,41 @@ def threaded_wire(device,indevice):
     stream.close()
     p.terminate()
 
+def dpMic(inputDevice, device1, device2):
+    import os, threading, sounddevice, pyaudio
+    if device1 == 'blank':
+        print("Fallback to default device...")
+        player = threading.Thread(target=threaded_wire, args=((sounddevice.default.device),inputDevice))
+        player.start()
+    else:
+        if device2 == 'blank':
+            print("Using first device...")
+            player = threading.Thread(target=threaded_wire, args=(device1, inputDevice))
+            player.start()
+        else:
+            print("Using both devices...")
+            player = threading.Thread(target=threaded_wire, args=(device1, inputDevice))
+            player2 = threading.Thread(target=threaded_wire, args=(device2, inputDevice))
+            player.start()
+            player2.start()
+def dpFile(device1,device2,filename,dtype):
+    import os, threading, sys, sounddevice, pyaudio
+    ar, sl = convNumPy(filename, dtype)
+    if device1 == 'blank':
+        print("Fallback to default device...")
+        player = threading.Thread(target=threaded_player, args=(ar,filename,(sounddevice.default.device),sl))
+        player.start()
+    else:
+        if device2 == 'blank':
+            print("Using first device...")
+            player = threading.Thread(target=threaded_player, args=(ar,filename,device1,sl))
+            player.start()
+        else:
+            print("Using both devices...")
+            player = threading.Thread(target=threaded_player, args=(ar,filename,device1,sl))
+            player2 = threading.Thread(target=threaded_player, args=(ar,filename,device2,sl))
+            player.start()
+            player2.start()
 def livebridge(filename, inputDevice, dtype, device1, device2):
     processorCheck()
     import os, threading, sys, sounddevice, pyaudio
@@ -193,66 +228,12 @@ def livebridge(filename, inputDevice, dtype, device1, device2):
         os.chdir('..')
     if filename == 'livebridge' and inputDevice == 'blank':
         liveDeviceCheck('')
-
         # Microphone Input #
     elif filename == 'livebridge' and not inputDevice == 'blank':
-        if device1 == 'blank':
-            print("Fallback to default device...")
-            player = threading.Thread(target=threaded_wire, args=((sounddevice.default.device),inputDevice))
-            player.start()
-        else:
-            if device2 == 'blank':
-                print("Using first device...")
-                player = threading.Thread(target=threaded_wire, args=(device1, inputDevice))
-                player.start()
-            else:
-                print("Using both devices...")
-                player = threading.Thread(target=threaded_wire, args=(device1, inputDevice))
-                player2 = threading.Thread(target=threaded_wire, args=(device2, inputDevice))
-                player.start()
-                player2.start()
-
+        dpMic(inputDevice,device1,device2)
                 # File Input #
     elif inputDevice == 'blank':
-        if device1 == 'blank':
-            print("Fallback to default device...")
-            player = threading.Thread(target=threaded_player, args=(
-                (convNumPy(filename, dtype)[0]),
-                filename,
-                (sounddevice.default.device),
-                (convNumPy(filename, dtype)[1])
-            ))
-
-            player.start()
-        else:
-            if device2 == 'blank':
-                print("Using first device...")
-                player = threading.Thread(target=threaded_player, args=(
-                    (convNumPy(filename, dtype)[0]),
-                    filename,
-                    device1,
-                    (convNumPy(filename, dtype)[1])
-                ))
-
-                player.start()
-            else:
-                print("Using both devices...")
-                player = threading.Thread(target=threaded_player, args=(
-                    (convNumPy(filename, dtype)[0]),
-                    filename,
-                    device1,
-                    (convNumPy(filename, dtype)[1])
-                ))
-                
-                player2 = threading.Thread(target=threaded_player, args=(
-                    (convNumPy(filename, dtype)[0]),
-                    filename,
-                    device2,
-                    (convNumPy(filename, dtype)[1])
-                ))
-
-                player.start()
-                player2.start()
+        dpFile(device1,device2,filename,dtype)
     else:
         print("There's been an error. Ensure you're not passing -f and -i together.")
 
@@ -264,7 +245,7 @@ def liveDeviceCheck(lType):
         print(sd.query_devices())
     else:
         print("When selecting a device, use the device number.")
-        print("Xavi thinks the following devices will work best for output:")
+        print("Xavi thinks the following devices will work best:")
         print("")
         for number,letter in enumerate(sd.query_devices()):
             lVals = [k for k in letter.values() ]
@@ -274,19 +255,10 @@ def liveDeviceCheck(lType):
                     print("Device " + str(number) + ": " + deviceName)
                 if "speakers" in str(deviceName).lower():
                     print("Device " + str(number) + ": " + deviceName)
-            else:
-                continue
-        print("")
-        print("Xavi thinks the following devices will work best for input:")
-        print("")
-        for number,letter in enumerate(sd.query_devices()):
-            lVals = [k for k in letter.values() ]
-            if number < 10:
-                deviceName = lVals[0]
                 if "microphone" in str(deviceName).lower():
-                    print("Device " + str(number) + ": " + deviceName)
+                    print("Input Device " + str(number) + ": " + deviceName)
                 if "input" in str(deviceName).lower():
-                    print("Device " + str(number) + ": " + deviceName)
+                    print("Input Device " + str(number) + ": " + deviceName)
             else:
                 continue
     exit()
