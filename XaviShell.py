@@ -5,8 +5,10 @@ Shell Service
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
 '''
-Version = '071019.5x0002'
+Version = '073019.5x0003'
 '''
+Release Version:: 0.0.1
+
 /NOTES/
 
 
@@ -35,6 +37,7 @@ def errorHandle(error):
 def xs_cmFormulate(npa,lv,pr):
     Args = {
         'dtype':'-d ',
+        'ind':'-i ',
         'device1':'-fd ',
         'device2':'-sd ',
         'freq':'-r ',
@@ -45,8 +48,10 @@ def xs_cmFormulate(npa,lv,pr):
         print("")
         command = []
         command.append(str(confItems[0] +' XaviSNS.py -c livebridge '))
-        fname, dty, dv1, dv2 = npa[0], npa[1], npa[2], npa[3]
-        command.append(str('-f ' + fname + " "))
+        fname, ind, dty, dv1, dv2 = npa[0], npa[1], npa[2], npa[3], npa[4]
+        if len(fname) < 0: command.append(str('-f ' + fname + " "))
+        if not ind == '':
+            command.append(str((Args["ind"]) + ind + " "))
         if not dty == '':
             command.append(str((Args["dtype"]) + dty + " "))
         if not dv1 == '':
