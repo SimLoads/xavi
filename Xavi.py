@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Main Tools
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 071919.1x0013
+Version:: 073019.1x0014
 Release Version:: 0.0.1
 
 /NOTES/
@@ -161,28 +161,100 @@ def threaded_player(waveArray,filename,device,smplrate):
     input()
     sd.stop()
 
-def livebridge(filename, dtype, device1, device2):
+def wireWaitForInput(stream,ck):
+    while True:
+        data = stream.read(ck)
+        stream.write(data, ck)
+
+def threaded_wire(device,indevice):
+    import pyaudio,threading
+    ck,rt = 1024,44100
+    p = pyaudio.PyAudio()
+    stream = p.open(format=p.get_format_from_width(2),
+                    channels=2,
+                    rate=rt,
+                    output_device_index=int(device),
+                    input_device_index=int(indevice),
+                    input=True,
+                    output=True,
+                    frames_per_buffer=ck)
+
+    waiter = threading.Thread(target=wireWaitForInput, args=(stream,ck))
+    waiter.start()
+    input()
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
+
+def livebridge(filename, inputDevice, dtype, device1, device2):
     processorCheck()
-    import os, threading, sys, sounddevice
+    import os, threading, sys, sounddevice, pyaudio
     if ("xavi" in os.getcwd()):
         os.chdir('..')
-    if filename == 'livebridge':
+    if filename == 'livebridge' and inputDevice == 'blank':
         liveDeviceCheck('')
-    if device1 == 'blank':
-        print("Fallback to default device...")
-        player = threading.Thread(target=threaded_player, args=((convNumPy(filename, dtype)[0]),filename,(sounddevice.default.device),(convNumPy(filename, dtype)[1])))
-        player.start()
-    else:
-        if device2 == 'blank':
-            print("Using first device...")
-            player = threading.Thread(target=threaded_player, args=((convNumPy(filename, dtype)[0]),filename,device1,(convNumPy(filename, dtype)[1])))
+
+        # Microphone Input #
+    elif filename == 'livebridge' and not inputDevice == 'blank':
+        if device1 == 'blank':
+            print("Fallback to default device...")
+            player = threading.Thread(target=threaded_wire, args=((sounddevice.default.device),inputDevice))
             player.start()
         else:
-            print("Using both devices...")
-            player = threading.Thread(target=threaded_player, args=((convNumPy(filename, dtype)[0]),filename,device1,(convNumPy(filename, dtype)[1])))
-            player2 = threading.Thread(target=threaded_player, args=((convNumPy(filename, dtype)[0]),filename,device2,(convNumPy(filename, dtype)[1])))
+            if device2 == 'blank':
+                print("Using first device...")
+                player = threading.Thread(target=threaded_wire, args=(device1, inputDevice))
+                player.start()
+            else:
+                print("Using both devices...")
+                player = threading.Thread(target=threaded_wire, args=(device1, inputDevice))
+                player2 = threading.Thread(target=threaded_wire, args=(device2, inputDevice))
+                player.start()
+                player2.start()
+
+                # File Input #
+    elif inputDevice == 'blank':
+        if device1 == 'blank':
+            print("Fallback to default device...")
+            player = threading.Thread(target=threaded_player, args=(
+                (convNumPy(filename, dtype)[0]),
+                filename,
+                (sounddevice.default.device),
+                (convNumPy(filename, dtype)[1])
+            ))
+
             player.start()
-            player2.start()
+        else:
+            if device2 == 'blank':
+                print("Using first device...")
+                player = threading.Thread(target=threaded_player, args=(
+                    (convNumPy(filename, dtype)[0]),
+                    filename,
+                    device1,
+                    (convNumPy(filename, dtype)[1])
+                ))
+
+                player.start()
+            else:
+                print("Using both devices...")
+                player = threading.Thread(target=threaded_player, args=(
+                    (convNumPy(filename, dtype)[0]),
+                    filename,
+                    device1,
+                    (convNumPy(filename, dtype)[1])
+                ))
+                
+                player2 = threading.Thread(target=threaded_player, args=(
+                    (convNumPy(filename, dtype)[0]),
+                    filename,
+                    device2,
+                    (convNumPy(filename, dtype)[1])
+                ))
+
+                player.start()
+                player2.start()
+    else:
+        print("There's been an error. Ensure you're not passing -f and -i together.")
 
 def liveDeviceCheck(lType):
     processorCheck()
@@ -201,6 +273,19 @@ def liveDeviceCheck(lType):
                 if "head" in str(deviceName).lower():
                     print("Device " + str(number) + ": " + deviceName)
                 if "speakers" in str(deviceName).lower():
+                    print("Device " + str(number) + ": " + deviceName)
+            else:
+                continue
+        print("")
+        print("Xavi thinks the following devices will work best for input:")
+        print("")
+        for number,letter in enumerate(sd.query_devices()):
+            lVals = [k for k in letter.values() ]
+            if number < 10:
+                deviceName = lVals[0]
+                if "microphone" in str(deviceName).lower():
+                    print("Device " + str(number) + ": " + deviceName)
+                if "input" in str(deviceName).lower():
                     print("Device " + str(number) + ": " + deviceName)
             else:
                 continue
