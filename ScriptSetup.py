@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Installer
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 073019.4x0018
+Version:: 082819.4x0019
 Release Version:: 0.0.3
 
 /NOTES/
@@ -149,7 +149,13 @@ def mainRepeat(mList):
         url = letter
         name = (url.split('/'))[6]
         print("Got URL of package: " + name)
-        urllib.request.urlretrieve(url, ('%s.whl' % name))
+        try:
+            urllib.request.urlretrieve(url, ('%s.whl' % name))
+        except urllib.error.URLError:
+            print("There's been a problem with downloading.")
+            print("Please install certifi using 'pip install certifi'")
+            input()
+            exit()
         print("Saved wheel in: " + os.getcwd())
         whln = ((glob.glob("*.whl"))[0])
         os.rename(whln, ("%s.zip" %whln))
