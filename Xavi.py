@@ -77,11 +77,6 @@ def audtest(filename):
 def testwave(freq, length, fname):
     processorCheck()
     import os, numpy as np, wave, struct
-    try:
-        os.chdir('matplotlib')
-    except:
-        print("Installation Error")
-        exit()
     os.chdir('..')
     if('xavi' in os.getcwd()):
         os.chdir('..')
