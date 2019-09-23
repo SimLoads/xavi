@@ -1,0 +1,14 @@
+  {
+    "name": "pyaudio_portaudio
+    "description": "",
+    "version": "1.1",
+    "main": "pyaudio/pyaudio.py",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/intxcc/pyaudio_portaudio.git"
+    },
+    "keywords": [],
+    "author": "intxcc",
+    "license": "MIT",
+    "homepage": "https://github.com/intxcc/pyaudio_portaudio"
+  }
