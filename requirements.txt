@@ -3,4 +3,4 @@ scipy==1.2.1
 sounddevice==0.3.13
 matplotlib==3.0.3
 cffi==1.12.3
-pyaudio_portaudio==1.1.1
+intxcc/pyaudio_portaudio==1.1.1
