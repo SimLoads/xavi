@@ -17,7 +17,11 @@ from ._ufuncs import *
   File "_ufuncs.pyx", line 1, in init scipy.special._ufuncs
 ImportError: DLL load failed: The specified module could not be found.
 ```
-Please let me know. As far as I'm aware this is an issue out of my control, caused by, get this, the make of your CPU. Intel machines shouldn't have this problem and I'm working on a fix for AMD based PCs. Raise an issue if you get this, I need to know if it's just me.
+There is now a fix for this! Re-run 'SetupScript' again and suspend execution on the prompt. Enter 'c' and let the installer finish. Once it exits, use
+```
+pip install -r requirements.txt
+```
+This will install the dependencies regularly and should fix this error. 
 
 
 ### Xavi is currently in development. Some features probably won't work!
