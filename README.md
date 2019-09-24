@@ -68,6 +68,7 @@ This plays the sound to both devices simultaneously.
 
 Xavi makes use of and can download the following packages: 
 
+[This wonderful precompiled version of PyAudio](https://github.com/intxcc/pyaudio_portaudio) by [intxcc](https://github.com/intxcc)  
 [BeautifulSoup4](https://www.pypi.org/project/beautifulsoup4/)  
 [Sounddevice](https://www.pypi.org/project/sounddevice/)  
 [SciPy](https://www.scipy.org/)  
