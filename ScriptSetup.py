@@ -4,8 +4,8 @@ Xavi Standard Audio Service
 Installer
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 082819.4x0019
-Release Version:: 0.0.3
+Version:: 092419.4x0022
+Release Version:: 0.0.4
 
 /NOTES/
 
@@ -13,7 +13,34 @@ Release Version:: 0.0.3
 
 
 '''
-import sys,os,urllib.request,re,glob,zipfile,time,shutil,platform
+import sys,os,urllib.request,re,glob,zipfile,time,shutil,platform,msvcrt
+mList = [
+        "https://files.pythonhosted.org/packages/4e/9d/c129d78e6b942303b762ccfdf1f8339de80c5e6021b14ef0c99ec5bdc6aa/numpy-1.16.3-cp37-cp37m-win_amd64.whl",
+        "https://files.pythonhosted.org/packages/58/f0/d00c0e01e077da883f030af3ff5ce653a0e9e4786f83faa89a6e18c98612/scipy-1.2.1-cp37-cp37m-win_amd64.whl",
+        "https://files.pythonhosted.org/packages/7f/15/fd6d923adccc64d2d93fcffc245bb2471a2509bb2905a89c4fc772ce4e35/sounddevice-0.3.13-py2.py3.cp26.cp27.cp32.cp33.cp34.cp35.cp36.cp37.cp38.pp27.pp32.pp33.pp34.pp35.pp36-none-win_amd64.whl",
+        'https://files.pythonhosted.org/packages/2f/ad/9722b7752fdd88c858be57b47f41d1049b5fb0ab79caf0ab11407945c1a7/cffi-1.12.3-cp37-cp37m-win_amd64.whl',
+        "https://files.pythonhosted.org/packages/13/ca/8ae32601c1ebe482b140981eedadf8a927de719ca4cecc550b12a4b78f2d/matplotlib-3.0.3-cp37-cp37m-win_amd64.whl"
+    ]
+def timer():
+    timeout = 2
+    start_time = time.time()
+    print("Press any key to interrupt...")
+    input = ''
+    while True:
+        if msvcrt.kbhit():
+            byte_arr = msvcrt.getche()
+            if ord(byte_arr) == 13: # enter_key
+                break
+            elif ord(byte_arr) >= 32: #space_char
+                break
+        if (time.time() - start_time) > timeout:
+            input = 'entry'
+            break
+
+    if input ==('entry'):
+        return 'time'
+    else:
+        return 'pause'
 def setPrep():
     print("Preparing setup...")
     if not "windows" in (platform.platform()).lower():
@@ -69,7 +96,8 @@ def unpack(branch,files,rep,trees):
     "license",
     "readme.md",
     "scriptsetup.py",
-    "xaviinstaller.exe"]
+    "xaviinstaller.exe",
+    "requirements.txt"]
 
     dirCh = [
     "xavisns.py",
@@ -106,20 +134,17 @@ def saveFile(letterfix,letter,fileName):
         urllib.request.urlretrieve(downfile, filenm)
     return()
 def nextStep():
-    mList = [
-        "https://files.pythonhosted.org/packages/4e/9d/c129d78e6b942303b762ccfdf1f8339de80c5e6021b14ef0c99ec5bdc6aa/numpy-1.16.3-cp37-cp37m-win_amd64.whl",
-        "https://github.com/intxcc/pyaudio_portaudio/releases/download/1.1.1/PyAudio-0.2.11-cp37-cp37m-win_amd64.whl",
-        "https://files.pythonhosted.org/packages/58/f0/d00c0e01e077da883f030af3ff5ce653a0e9e4786f83faa89a6e18c98612/scipy-1.2.1-cp37-cp37m-win_amd64.whl",
-        "https://files.pythonhosted.org/packages/7f/15/fd6d923adccc64d2d93fcffc245bb2471a2509bb2905a89c4fc772ce4e35/sounddevice-0.3.13-py2.py3.cp26.cp27.cp32.cp33.cp34.cp35.cp36.cp37.cp38.pp27.pp32.pp33.pp34.pp35.pp36-none-win_amd64.whl",
-        'https://files.pythonhosted.org/packages/2f/ad/9722b7752fdd88c858be57b47f41d1049b5fb0ab79caf0ab11407945c1a7/cffi-1.12.3-cp37-cp37m-win_amd64.whl',
-        "https://files.pythonhosted.org/packages/13/ca/8ae32601c1ebe482b140981eedadf8a927de719ca4cecc550b12a4b78f2d/matplotlib-3.0.3-cp37-cp37m-win_amd64.whl"
-    ]
-    if "matplotlib" in os.getcwd():
-        packageCleanup()
-    elif "types" in os.getcwd():
+    if "types" in os.getcwd() and doInstallDepends:
         os.chdir('..')
         os.chdir('..')
         mainRepeat(mList)
+    elif "types" in os.getcwd() and not doInstallDepends:
+        packageCleanup()
+    elif "matplotlib" in os.getcwd():
+        os.chdir('..')
+        packageCleanup()
+    elif not os.path.exists('pyaudio.py'):
+        runTotal('https://github.com/SimLoads/xavi/tree/pyaudio-localrep')
     elif "xavi_filetype_mod" in os.getcwd():
         os.mkdir("types")
         os.chdir("types")
@@ -149,13 +174,7 @@ def mainRepeat(mList):
         url = letter
         name = (url.split('/'))[6]
         print("Got URL of package: " + name)
-        try:
-            urllib.request.urlretrieve(url, ('%s.whl' % name))
-        except urllib.error.URLError:
-            print("There's been a problem with downloading.")
-            print("Please install certifi using 'pip install certifi'")
-            input()
-            exit()
+        urllib.request.urlretrieve(url, ('%s.whl' % name))
         print("Saved wheel in: " + os.getcwd())
         whln = ((glob.glob("*.whl"))[0])
         os.rename(whln, ("%s.zip" %whln))
@@ -228,11 +247,38 @@ def packageCleanup():
     print("Installed Xavi.")
     time.sleep(2)
     exit()
+def installOptions(ch):
+    rl_base = [
+        'numpy==1.16.3',
+        'scipy==1.2.1',
+        'sounddevice==0.3.13',
+        'matplotlib==3.0.3',
+        'cffi==1.12.3'
+    ]
+    if ch == 'c':
+        print("Dependencies must be installed manually.")
+        with open('requirements.txt', 'a') as rt:
+            for ix in rl_base:
+                rt.write(ix + "\n")
+            rt.close()
+        print("requirements.txt created.")
+        input("Press any key to continue installation.")    
+        setPrep()
+    if ch == 'm':
+        print("Forcing cleanup...")
+        try:
+            os.chdir('xavi')
+        except:
+            print("Fail.")
+            exit()
+        packageCleanup()
+
 if os.path.exists("xavi"):
     print("Reinstalling Xavi...")
     shutil.rmtree('xavi', ignore_errors=True)
 try:
     from bs4 import *
+    print("BS4 Confirmed")
 except:
     print("Downloading BeautifulSoup4 locally...")
     status = bs4install()
@@ -241,4 +287,12 @@ except:
         print("Install BeautifulSoup4 with PIP then try again.")
         input()
         exit()
-setPrep()
+x = timer()
+if x == 'pause':
+    doInstallDepends = False
+    print("Suspending.")
+    toIn = input("[C]hange install properties, [M]odify install, [E]xit: ")
+    exit() if toIn.lower() not in ['c','m'] else installOptions(toIn.lower())
+else:
+    doInstallDepends = True
+    setPrep()
