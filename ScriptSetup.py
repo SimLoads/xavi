@@ -4,8 +4,8 @@ Xavi Standard Audio Service
 Installer
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 092319.4x0020
-Release Version:: 0.0.3
+Version:: 092419.4x0022
+Release Version:: 0.0.4
 
 /NOTES/
 
@@ -96,7 +96,8 @@ def unpack(branch,files,rep,trees):
     "license",
     "readme.md",
     "scriptsetup.py",
-    "xaviinstaller.exe"]
+    "xaviinstaller.exe",
+    "requirements.txt"]
 
     dirCh = [
     "xavisns.py",
@@ -142,6 +143,8 @@ def nextStep():
     elif "matplotlib" in os.getcwd():
         os.chdir('..')
         packageCleanup()
+    elif not os.path.exists('pyaudio.py'):
+        runTotal('https://github.com/SimLoads/xavi/tree/pyaudio-localrep')
     elif "xavi_filetype_mod" in os.getcwd():
         os.mkdir("types")
         os.chdir("types")
