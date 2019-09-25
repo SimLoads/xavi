@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Installer
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 092419.4x0022
+Version:: 092519.4x0024
 Release Version:: 0.0.4
 
 /NOTES/
@@ -21,6 +21,22 @@ mList = [
         'https://files.pythonhosted.org/packages/2f/ad/9722b7752fdd88c858be57b47f41d1049b5fb0ab79caf0ab11407945c1a7/cffi-1.12.3-cp37-cp37m-win_amd64.whl',
         "https://files.pythonhosted.org/packages/13/ca/8ae32601c1ebe482b140981eedadf8a927de719ca4cecc550b12a4b78f2d/matplotlib-3.0.3-cp37-cp37m-win_amd64.whl"
     ]
+depurls = [
+    #Six
+    "https://files.pythonhosted.org/packages/73/fb/00a976f728d0d1fecfe898238ce23f502a721c0ac0ecfedb80e0d88c64e9/six-1.12.0-py2.py3-none-any.whl",
+    #Pyparsing Works
+    "https://files.pythonhosted.org/packages/dd/d9/3ec19e966301a6e25769976999bd7bbe552016f0d32b577dc9d63d2e0c49/pyparsing-2.4.0-py2.py3-none-any.whl", 
+    #libpng
+    "https://downloads.sourceforge.net/project/libpng/libpng16/1.6.37/lpng1637.zip", 
+    #Freetype
+    "https://downloads.sourceforge.net/project/freetype/freetype2/2.10.0/ft2100.zip", 
+    #Kiwisolver Works
+    "https://files.pythonhosted.org/packages/c6/ea/e5474014a13ab2dcb5056608e0716c600c3d8a8bcffb10ed55ccd6a42eb0/kiwisolver-1.1.0-cp37-none-win_amd64.whl", 
+    #Dateutil Works
+    "https://files.pythonhosted.org/packages/41/17/c62faccbfbd163c7f57f3844689e3a78bae1f403648a6afb1d0866d87fbb/python_dateutil-2.8.0-py2.py3-none-any.whl", 
+    #Cycler works
+    "https://files.pythonhosted.org/packages/f7/d2/e07d3ebb2bd7af696440ce7e754c59dd546ffe1bbe732c8ab68b9c834e61/cycler-0.10.0-py2.py3-none-any.whl"]
+
 def timer():
     timeout = 2
     start_time = time.time()
@@ -185,21 +201,6 @@ def mainRepeat(mList):
     os.chdir('matplotlib')
     getMatlibDeps()
 def getMatlibDeps():
-    depurls = [
-    #Six
-    "https://files.pythonhosted.org/packages/73/fb/00a976f728d0d1fecfe898238ce23f502a721c0ac0ecfedb80e0d88c64e9/six-1.12.0-py2.py3-none-any.whl",
-    #Pyparsing Works
-    "https://files.pythonhosted.org/packages/dd/d9/3ec19e966301a6e25769976999bd7bbe552016f0d32b577dc9d63d2e0c49/pyparsing-2.4.0-py2.py3-none-any.whl", 
-    #libpng
-    "https://downloads.sourceforge.net/project/libpng/libpng16/1.6.37/lpng1637.zip", 
-    #Freetype
-    "https://downloads.sourceforge.net/project/freetype/freetype2/2.10.0/ft2100.zip", 
-    #Kiwisolver Works
-    "https://files.pythonhosted.org/packages/c6/ea/e5474014a13ab2dcb5056608e0716c600c3d8a8bcffb10ed55ccd6a42eb0/kiwisolver-1.1.0-cp37-none-win_amd64.whl", 
-    #Dateutil Works
-    "https://files.pythonhosted.org/packages/41/17/c62faccbfbd163c7f57f3844689e3a78bae1f403648a6afb1d0866d87fbb/python_dateutil-2.8.0-py2.py3-none-any.whl", 
-    #Cycler works
-    "https://files.pythonhosted.org/packages/f7/d2/e07d3ebb2bd7af696440ce7e754c59dd546ffe1bbe732c8ab68b9c834e61/cycler-0.10.0-py2.py3-none-any.whl"]
     for number, letter in enumerate(depurls):
         urlSplit = letter.split('/')
         if ".zip" in letter[5:]:
@@ -273,9 +274,6 @@ def installOptions(ch):
             exit()
         packageCleanup()
 
-if os.path.exists("xavi"):
-    print("Reinstalling Xavi...")
-    shutil.rmtree('xavi', ignore_errors=True)
 try:
     from bs4 import *
     print("BS4 Confirmed")
@@ -295,4 +293,7 @@ if x == 'pause':
     exit() if toIn.lower() not in ['c','m'] else installOptions(toIn.lower())
 else:
     doInstallDepends = True
+    if os.path.exists("xavi"):
+        print("Reinstalling Xavi...")
+        shutil.rmtree('xavi', ignore_errors=True)
     setPrep()
