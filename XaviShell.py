@@ -5,7 +5,7 @@ Shell Service
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
 '''
-Version = '073019.5x0004'
+Version = '092519.5x0005'
 '''
 Release Version:: 0.0.1
 
@@ -148,6 +148,7 @@ def takeInput():
             elif "query" in process:
                 com = input("command >> ")
                 query(com)
+                takeInput()
             # Else 
             else:
                 if process == "exit":
