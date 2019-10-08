@@ -31,19 +31,17 @@ This will install the dependencies regularly and should fix this error.
 ## What can Xavi do?
 Xavi is designed with simplicity in mind, and will do its best to automate as many processes as possible. Here's a small feature list that you can use right now: 
 + NO DEPENDENCIES LEFT BEHIND - Automatic install of packages needed by Xavi (handled by installer) 
-+ Sending an input file to dual outputs of choice (working on live microphone dual outputs and more than 2 outputs at a time)
++ Send either a file or live microphone input to two output devices in real time
 + Generate test tones of a certain length and frequency
-+ Identify if a file is supported or not
 + Powerful command line input processing with parameters and non order-specific delimiters
 + Can just play music regularly too.
 + Simple updating of code
 
 ## Getting started with Xavi
-To start, download either 'ScriptSetup.py' or 'XaviInstaller.exe'. They both do the same thing, but sometimes a GUI is nice to look at.  
-You're going to need > Python 3.5 installed on your PATH to use XaviInstaller.exe, else you can just point Python to ScriptSetup and it should install just fine.  
+To start, download 'ScriptSetup.py' and run it in the target directory.
 
 
-When the install is complete, you can use Xavi by running Xavi.exe or by sending it commands directly. To make things easier for external programs, Xavi is never accessed directly. You'll need to send scripts to the _Stop 'N' Swap System_, which you'll find under XaviSNS.py  
+When the install is complete, you can use Xavi by using the _Stop 'N' Swap System_, XaviSNS.
 
 Here's an example of a command:
 ```
