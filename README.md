@@ -23,11 +23,6 @@ pip install -r requirements.txt
 ```
 This will install the dependencies regularly and should fix this error. 
 
-
-### Xavi is currently in development. Some features probably won't work!
-#### Currently, Xavi.exe doesn't do anything. Don't rely on it for actual usage.
-
-
 ## What can Xavi do?
 Xavi is designed with simplicity in mind, and will do its best to automate as many processes as possible. Here's a small feature list that you can use right now: 
 + NO DEPENDENCIES LEFT BEHIND - Automatic install of packages needed by Xavi (handled by installer) 
