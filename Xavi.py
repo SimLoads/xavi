@@ -42,10 +42,8 @@ t2.start()
 def processorCheck():
     import platform
     if "amd" in (str(platform.processor())).lower():
-        print("Sorry! There's been an error.")
-        print("AMD Machines are currently not supported.")
-        print("Check the GitHub for more info.")
-        exit()
+        print("Caution! Your processor may not work as intended.")
+        print("Refer to the README for info on how to fix this.")
     else:
         return()
 import warnings
