@@ -4,8 +4,8 @@ Xavi Standard Audio Service
 Stop and Swap System
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 073019.2x0014
-Release Version:: 0.0.1
+Version:: 112219.2x0015
+Release Version:: 0.0.2
 
 /NOTES/
 
@@ -15,7 +15,7 @@ Release Version:: 0.0.1
 import sys
 import os
 
-funcList = '[livebridge/testwave/tempo/toMono]'
+funcList = '[livebridge/testwave/tempo/getsamples]'
 
 
 def error(type, param=""):
@@ -54,6 +54,8 @@ if __name__ == "__main__":
         help='Frequency of output (Certain functions only)')
     inps.add_argument('-d', type=str, metavar='dtype', required=False, default='int16', 
         help='Select DType (Certain functions only)')
+    inps.add_argument('-t', type=str, metavar='threshold', required=False, default='m', 
+        help='Select detection threshold (Certain functions only)')
     inps.add_argument('-fd', type=str, metavar='device ID', required=False, default='blank',
         help='Specify first device (Certain functions only)')
     inps.add_argument('-sd', type=str, metavar='device ID', required=False, default='blank',
@@ -76,10 +78,9 @@ if __name__ == "__main__":
         Xavi.testwave(ag.r, ag.l, fnm)
         exit()
     if ag.c == "tempo":
-        os.chdir("xavi")
-        Xavi.tempo(ag.f)
-    if ag.c == "toMono":
-        Xavi.toMono(ag.f)
+        Xavi.tempo(ag.f, ag.t)
+    if ag.c == "getsamples":
+        Xavi.getSamples(ag.f)
     else:
         error("call", ag.c)
     exit()

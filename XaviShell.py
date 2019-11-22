@@ -5,7 +5,7 @@ Shell Service
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
 '''
-Version = '092519.5x0005'
+Version = '112219.5x0006'
 '''
 Release Version:: 0.0.1
 
@@ -117,8 +117,11 @@ def cmod():
 def force():
     import Xavi,XaviSNS
     direct = input("direct|>")
-    run = ("python XaviSNS.py " + direct)
+    if direct == "return":
+        return
+    run = ("python XaviSNS.py -c " + direct)
     os.system(run)
+    force()
 
 def arg(out, dcLookup, process):
     import Xavi
@@ -184,7 +187,7 @@ cmList = {
 helpdict = {
     "exit": "Closes the program.",
     "reboot": "Closes the program, then opens a new instance of it.",
-    "force": "Forces a command to pass directly into XaviSNS. [experimental]",
+    "force": "Forces a command to pass directly into XaviSNS. Use 'return' to return.",
     "edir": "Set where XaviShell calls python from, either $PATH or an absolute directoy.",
     "query": "Get help for specific command",
     "help": "Displays the help menu.",

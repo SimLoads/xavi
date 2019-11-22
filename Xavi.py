@@ -4,8 +4,8 @@ Xavi Standard Audio Service
 Main Tools
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 073019.1x0015
-Release Version:: 0.0.1
+Version:: 112219.1x0016
+Release Version:: 0.0.2
 
 /NOTES/
 
@@ -36,6 +36,11 @@ t1.start()
 
 t2=threading.Thread(target=my_job)
 t2.start()
+
+# wav_file = wave.open(onm, "w")
+# wav_file.setparams((1, ampWidth, sampleRate, nFrames, spf.getcomptype(), spf.getcompname()))
+# wav_file.writeframes(filtered.tobytes('C'))
+# wav_file.close()
 
 //
 '''
@@ -120,12 +125,13 @@ def convNumPy(filename, dtype):
     except ValueError:
         print("Error with wav file.")
         print("Is it a converted mp3?")
+        raise
         exit()
     except FileNotFoundError:
         print("File not found!")
         exit()
     try:
-        waveArray = np.array(file[1],dtype=dtype)
+        waveArray = np.asarray(file[1],dtype=dtype)
     except:
         print("dtype : " + dtype + " is invalid.")
         exit()
@@ -151,8 +157,33 @@ def threaded_player(waveArray,filename,device,smplrate):
     timewait = int(((len(waveArray)) / smplrate))
     minswait = str(datetime.timedelta(seconds=timewait))
     print("File legnth: " + minswait)
-    input()
+    timer(minswait)
     sd.stop()
+
+def get_sec(tf,mw):
+    import datetime
+    if tf == 'hms':
+        h, m, s = mw.split(':')
+        return int(m) * 60 + int(s)
+    elif tf == 's':
+        return str(datetime.timedelta(seconds=float(mw)))
+
+def timer(tl):
+    import time, msvcrt
+    timeout = get_sec('hms', tl)
+    start_time = time.time()
+    print("Press any key to stop")
+    input = ''
+    while True:
+        if msvcrt.kbhit():
+            byte_arr = msvcrt.getche()
+            if ord(byte_arr) == 13: # enter_key
+                break
+            elif ord(byte_arr) >= 32: #space_char
+                break
+        if (time.time() - start_time) > timeout:
+            break
+    return
 
 def wireWaitForInput(stream,ck):
     while True:
@@ -196,6 +227,8 @@ def dpMic(inputDevice, device1, device2):
             player2 = threading.Thread(target=threaded_wire, args=(device2, inputDevice))
             player.start()
             player2.start()
+    exit()
+
 def dpFile(device1,device2,filename,dtype):
     import os, threading, sys, sounddevice, pyaudio
     ar, sl = convNumPy(filename, dtype)
@@ -214,17 +247,24 @@ def dpFile(device1,device2,filename,dtype):
             player2 = threading.Thread(target=threaded_player, args=(ar,filename,device2,sl))
             player.start()
             player2.start()
+    exit()
+
 def livebridge(filename, inputDevice, dtype, device1, device2):
     processorCheck()
     import os, threading, sys, sounddevice, pyaudio
     if ("xavi" in os.getcwd()):
         os.chdir('..')
     if filename == 'livebridge' and inputDevice == 'blank':
-        liveDeviceCheck('')
-        # Microphone Input #
+        print("When selecting a device, use the device number.")
+        print("Xavi thinks the following devices will work best:")
+        print("")
+        dvs = liveDeviceCheck('')
+        for n,l in enumerate(dvs):
+            print(l)
+    # Microphone Input #
     elif filename == 'livebridge' and not inputDevice == 'blank':
         dpMic(inputDevice,device1,device2)
-                # File Input #
+    # File Input #
     elif inputDevice == 'blank':
         dpFile(device1,device2,filename,dtype)
     else:
@@ -237,67 +277,114 @@ def liveDeviceCheck(lType):
     if lType == "all":
         print(sd.query_devices())
     else:
-        print("When selecting a device, use the device number.")
-        print("Xavi thinks the following devices will work best:")
-        print("")
+    
         for number,letter in enumerate(sd.query_devices()):
             lVals = [k for k in letter.values() ]
             if number < 10:
                 deviceName = lVals[0]
                 if "head" in str(deviceName).lower():
-                    print("Device " + str(number) + ": " + deviceName)
+                    recList.append("Device " + str(number) + ": " + deviceName)
                 if "speakers" in str(deviceName).lower():
-                    print("Device " + str(number) + ": " + deviceName)
+                    recList.append("Device " + str(number) + ": " + deviceName)
                 if "microphone" in str(deviceName).lower():
-                    print("Input Device " + str(number) + ": " + deviceName)
+                    recList.append("Input Device " + str(number) + ": " + deviceName)
                 if "input" in str(deviceName).lower():
-                    print("Input Device " + str(number) + ": " + deviceName)
+                    recList.append("Input Device " + str(number) + ": " + deviceName)
             else:
                 continue
-    exit()
+    return recList
 
-def tempo(data):
-    print("In development")
-    exit()
-    import numpy as np
-    import scipy.io.wavfile as scpiow
-    import scipy.signal as scps
+def tempo(data, threshold):
+    print("Getting things ready...")
+    import os, time, wave, itertools, contextlib, numpy as np
+    from scipy.signal import argrelextrema 
     import matplotlib.pyplot as plt
-    import os
+    cff = 100.0 #cutoff
+    dti = filter(cff,data)
+    with contextlib.closing(wave.open(data,'rb')) as getsr:
+        sr = getsr.getframerate()
+    if threshold == "h":
+        th = 9790
+    elif threshold == "m":
+        th = 7150
+    elif threshold == "l":
+        th = 6900
+    else:
+        print("Invalid threshold option: %s" % threshold)
+        print("Use h, m or l")
+        exit()
+    thresholdDetectFlag = False
+    spacesList = []
+    print("Reading song...")
+    time = float((len(dti)/sr))/6
+    print("This will take about %d seconds" % time)
+    for n,l in enumerate(dti):
+        if l > th and not thresholdDetectFlag:
+            spacesList.append(n / sr)
+            thresholdDetectFlag = True
+        if l < th:
+            thresholdDetectFlag = False
+            continue
+        else:
+            continue
+    print("Calculating tempo...")
+    diffs = [abs(e[1] - e[0]) for e in itertools.permutations(spacesList, 2)]
+    sumd = (sum(diffs)/len(diffs) / 100)
+    avg = (((sumd * 3) + (sumd * 4) + (sumd * 2) + (sumd * 3.5)) /4) * 60
+    print("Estimated tempo: %sbpm" % int(avg))
+    print("If this seems incorrect, try a different threshold.")
 
-    #plt.style.use('style/elegant.mplstyle')
-    os.chdir('..')
-    sr,aud=scpiow.read(data)
-    aud = np.mean(aud, axis=1)
-    N = aud.shape[0]
-    L = N / sr
-    M = 2096
-    R = ("{0:.2f}".format(L))
-    print('Audio length: %s Seconds' % R)
-    spectrum = np.fft.fft(aud, axis=0)[:M // 2 + 1:-1]
-    # spectrum = np.abs(spectrum)
-    # freqs, times, Sx = scps.spectrogram(aud, fs=sr, window='hanning',
-    #                                     nperseg=2096, noverlap=M - 100,
-    #                                     detrend=False, scaling='spectrum')
-    # f, ax = plt.subplots(figsize=(4.8, 2.4))
-    # ax.pcolormesh(times, freqs / 1000, 10 * np.log10(Sx), cmap='viridis')
-    # ax.set_ylabel('Frequency [kHz]')
-    # ax.set_xlabel('Time [s]');
-    plt.show()
     exit()
 
-def toMono(data):
-    print("In development.")
-    exit()
+def filter(cff,data):
+    import numpy as np,wave,sys,math,contextlib
+
+    ### https://github.com/piercus
+    with contextlib.closing(wave.open(data,'rb')) as spf:
+        sampleRate = spf.getframerate()
+        ampWidth = spf.getsampwidth()
+        nChannels = spf.getnchannels()
+        nFrames = spf.getnframes()
+        signal = spf.readframes(nFrames*nChannels)
+        spf.close()
+        channels = interpret_wav(signal, nFrames, nChannels, ampWidth, True)
+        freqRatio = (cff/sampleRate)
+        N = int(math.sqrt(0.196196 + freqRatio**2)/freqRatio)
+        filtered = running_mean(channels[0], N).astype(channels.dtype)
+        return filtered
+
+def running_mean(x, windowSize):
+    import numpy as np
+    cs = np.cumsum(np.insert(x, 0, 0)) 
+    return (cs[windowSize:] - cs[:-windowSize]) / windowSize
+
+def interpret_wav(raw_bytes, n_frames, n_channels, sample_width, interleaved = True):
+    import numpy as np
+    if sample_width == 1:
+        dtype = np.uint8
+    elif sample_width == 2:
+        dtype = np.int16
+    else:
+        raise ValueError("Only supports 8 and 16 bit audio formats.")
+    channels = np.fromstring(raw_bytes, dtype=dtype)
+    if interleaved:
+        channels.shape = (n_frames, n_channels)
+        channels = channels.T
+    else:
+        channels.shape = (n_channels, n_frames)
+    return channels
+
+def getSamples(data):
     import numpy as np
     import scipy.io.wavfile as scpiow
     import scipy.signal as scps
     import os
-    try:
-        sr,aud=scpiow.read(data)
-    except FileNotFoundError:
-        print("File not found!")
-        exit()
-    aud = np.mean(aud, axis=1) 
-    scpiow.write(str(data + '_mono.wav'), sr, aud)   
+    dt, sr = convNumPy(data, np.int16)
+    scs = (len(dt)/sr)
+    print()
+    print("Sample Rate: %s" % str(sr))
+    print("Total Samples: %s" % str(len(dt)))
+    print("Seconds: %s" % str(scs))
+    print("Real time: %s" % get_sec('s', int(round(scs))))
+    print()
     exit()
