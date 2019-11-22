@@ -43,13 +43,13 @@ Here's an example of a command:
 ```
 XaviSNS.py -c testwave -f test1 -l 1 -r 1000
 ```
-Here, we're calling the 'testwave' function which generates a tone. We're saving the output to a file called 'test1', with a 1 second length and frequency of 1000 Hz. If you need help with parameters, simply type:  
+Here, i'm calling the 'testwave' function which generates a tone, and saving the output to a file called 'test1', with a 1 second length and frequency of 1000 Hz. If you need help with parameters, simply type:  
 ```
 XaviSNS.py -h
 ```
 
 
-Here's another example. If we want to send the sound of 'test1.wav' to both my headphones and my speakers, we can use Livebridge. To begin, let's take a look at my available devices.
+Here's another example. Say I want to play that file back to my headphones and speakers at the same time, so I can show some friends my brand new sine wave. To list available audio devices, use:
 ```
 XaviSNS.py -c livebridge
 ```
