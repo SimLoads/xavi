@@ -7,7 +7,7 @@ If you're cloning this repo, ensure you use
 ```
 git clone https://github.com/SimLoads/xavi/ --branch setup --single-branch
 ```
-to prevent cloning of random things that you don't need.
+to prevent the cloning of random things that you don't need.
 
 ### If you encounter the error "ImportError: DLL Load Failed..."
 
@@ -24,11 +24,12 @@ pip install -r requirements.txt
 This will install the dependencies regularly and should fix this error. 
 
 ## What can Xavi do?
-Xavi is designed with simplicity in mind, and will do its best to automate as many processes as possible. Here's a small feature list that you can use right now: 
-+ NO DEPENDENCIES LEFT BEHIND - Automatic install of packages needed by Xavi (handled by installer) 
-+ Send either a file or live microphone input to two output devices in real time
+Xavi is designed with simplicity in mind and will do its best to automate as many processes as possible. Here's a small feature list that you can use right now: 
++ NO DEPENDENCIES LEFT BEHIND - Automatic install of packages needed by Xavi (handled by the installer) 
++ Send either a file or live microphone input to two output devices in real-time
++ Figure out tempos of songs, to the nearest 10 or so
 + Generate test tones of a certain length and frequency
-+ Powerful command line input processing with parameters and non order-specific delimiters
++ Powerful command line input processing with parameters and non-order-specific delimiters
 + Can just play music regularly too.
 + Simple updating of code
 
@@ -62,6 +63,7 @@ This plays the sound to both devices simultaneously.
 Xavi makes use of and can download the following packages: 
 
 [This wonderful precompiled version of PyAudio](https://github.com/intxcc/pyaudio_portaudio) by [intxcc](https://github.com/intxcc)  
+[This awesome low pass filter](https://gist.github.com/piercus/b005ed5fbc70761bde96) by [piercus](https://github.com/piercus)  
 [BeautifulSoup4](https://www.pypi.org/project/beautifulsoup4/)  
 [Sounddevice](https://www.pypi.org/project/sounddevice/)  
 [SciPy](https://www.scipy.org/)  
