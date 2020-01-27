@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Stop and Swap System
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 112219.2x0015
+Version:: 012720.2x0016
 Release Version:: 0.0.2
 
 /NOTES/
@@ -54,6 +54,8 @@ if __name__ == "__main__":
         help='Frequency of output (Certain functions only)')
     inps.add_argument('-d', type=str, metavar='dtype', required=False, default='int16', 
         help='Select DType (Certain functions only)')
+    inps.add_argument('--cache', type=str, metavar='cache', required=False, default='False', 
+        help='Allow caching (Certain functions only)')
     inps.add_argument('-t', type=str, metavar='threshold', required=False, default='m', 
         help='Select detection threshold (Certain functions only)')
     inps.add_argument('-fd', type=str, metavar='device ID', required=False, default='blank',
@@ -78,9 +80,12 @@ if __name__ == "__main__":
         Xavi.testwave(ag.r, ag.l, fnm)
         exit()
     if ag.c == "tempo":
-        Xavi.tempo(ag.f, ag.t)
+        Xavi.tempo(ag.f, ag.t, ag.cache)
     if ag.c == "getsamples":
         Xavi.getSamples(ag.f)
     else:
         error("call", ag.c)
     exit()
+
+else:
+    print("XaviSNS Imported")

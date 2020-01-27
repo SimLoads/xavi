@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Main Tools
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 112219.1x0016
+Version:: 012720.1x0018
 Release Version:: 0.0.2
 
 /NOTES/
@@ -294,27 +294,47 @@ def liveDeviceCheck(lType):
                 continue
     return recList
 
-def tempo(data, threshold):
-    print("Getting things ready...")
-    import os, time, wave, itertools, contextlib, numpy as np
-    from scipy.signal import argrelextrema 
-    import matplotlib.pyplot as plt
-    cff = 100.0 #cutoff
-    dti = filter(cff,data)
-    with contextlib.closing(wave.open(data,'rb')) as getsr:
-        sr = getsr.getframerate()
-    if threshold == "h":
-        th = 9790
-    elif threshold == "m":
-        th = 7150
-    elif threshold == "l":
-        th = 6900
-    else:
-        print("Invalid threshold option: %s" % threshold)
-        print("Use h, m or l")
-        exit()
+def createCache(splist, thld, nm):
+    stringf = ("<begin:threshold=%s:name=%s:end>" %(thld,nm))
+    with open((createCacheName(thld, nm)), 'w') as ch: 
+        ch.write(stringf)
+        for item in splist:
+            ch.write("%s," % item)
+        ch.close()
+    print('Cached data')
+
+def cacheload(nm,th,spacesList):
+    import glob
+    hit = False
+    cachelist = glob.glob("*.cachefile")
+    for item in cachelist:
+        if str(item) == (createCacheName(th,nm)):
+            hit = True
+            with open (item, 'r') as chO:
+                xData = chO.read()
+                cachenotes = ((xData.split('begin:'))[1].split(':end')[0])
+                fileTH = int(cachenotes.split('threshold=')[1].split(':')[0])
+                if fileTH == th:
+                    print("Using cached data")
+                    usingCache = True
+                    cachedata = ((xData.split('>'))[1].split(' ')[0]).split(',')
+                    for item in cachedata[:-1]:
+                        spacesList.append(float(item))
+    if hit == False:
+        for key, val in threshold_dict.items():
+            if int(val) == th:
+                tempo(nm,key,'False')
+    return spacesList
+
+def createCacheName(thld, nm):
+    import hashlib
+    stringformat = (str(thld) + nm).encode('utf-8')
+    name = hashlib.sha224(stringformat).hexdigest()
+    name = (name + '.cachefile')
+    return str(name)
+
+def readData(dti,sr,th,spacesList):
     thresholdDetectFlag = False
-    spacesList = []
     print("Reading song...")
     time = float((len(dti)/sr))/6
     print("This will take about %d seconds" % time)
@@ -327,10 +347,46 @@ def tempo(data, threshold):
             continue
         else:
             continue
+    return spacesList
+
+def tempo(data, threshold, usingCache):
+    print("Getting things ready...")
+    import os, time, wave, itertools, contextlib, threading, numpy as np
+    from scipy.signal import argrelextrema 
+    import matplotlib.pyplot as plt
+    cff = 100.0 #cutoff
+    try:
+        dti = filter(cff,data)
+    except FileNotFoundError:
+        print("No such file.")
+        exit()
+    spacesList = []
+    with contextlib.closing(wave.open(data,'rb')) as getsr:
+        sr = getsr.getframerate()
+    try:
+        th = int(threshold_dict[threshold])
+    except:
+        print("Invalid threshold option: %s" % threshold)
+        print("Use h, mh, m, ml, or l")
+        exit()
+    if usingCache == 'False': usingCache = False 
+    else: usingCache = True
+    if usingCache: spacesList = cacheload(data,th,spacesList)
+    else: spacesList = readData(dti,sr,th,spacesList)
     print("Calculating tempo...")
     diffs = [abs(e[1] - e[0]) for e in itertools.permutations(spacesList, 2)]
-    sumd = (sum(diffs)/len(diffs) / 100)
+    try:
+        sumd = (sum(diffs)/len(diffs) / 100)
+    except ValueError:
+        print("Failed to calculate. Try a different threshold.")
+        exit()
+    except ZeroDivisionError:
+        print("Threshold / Cache error. Retry without caching or with a lower threshold.")
+        exit()
     avg = (((sumd * 3) + (sumd * 4) + (sumd * 2) + (sumd * 3.5)) /4) * 60
+    if not usingCache:
+        cacheCr = threading.Thread(target=createCache, args=(spacesList, th, data))
+        cacheCr.start()
     print("Estimated tempo: %sbpm" % int(avg))
     print("If this seems incorrect, try a different threshold.")
 
@@ -388,3 +444,17 @@ def getSamples(data):
     print("Real time: %s" % get_sec('s', int(round(scs))))
     print()
     exit()
+
+threshold_dict = {
+    'h': '9790',
+    'mh': '8000',
+    'm': '7150',
+    'ml': '6900',
+    'l': '4000'
+}
+
+if __name__ == "__main__":
+    print("Pass commands to Xavi using XaviSNS or XaviShell")
+    timer('00:00:03')
+    exit()
+
