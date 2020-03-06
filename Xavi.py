@@ -4,7 +4,7 @@ Xavi Standard Audio Service
 Main Tools
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
-Version:: 012720.1x0018
+Version:: 030620.1x0020
 Release Version:: 0.0.2
 
 /NOTES/
@@ -431,10 +431,14 @@ def interpret_wav(raw_bytes, n_frames, n_channels, sample_width, interleaved = T
     return channels
 
 def getSamples(data):
+    print("Loading...")
+    import os
+    if not os.path.exists(data):
+        print("File not found!")
+        return
     import numpy as np
     import scipy.io.wavfile as scpiow
     import scipy.signal as scps
-    import os
     dt, sr = convNumPy(data, np.int16)
     scs = (len(dt)/sr)
     print()
@@ -443,7 +447,7 @@ def getSamples(data):
     print("Seconds: %s" % str(scs))
     print("Real time: %s" % get_sec('s', int(round(scs))))
     print()
-    exit()
+    return
 
 threshold_dict = {
     'h': '9790',

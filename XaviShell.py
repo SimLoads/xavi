@@ -5,7 +5,7 @@ Shell Service
 
 Author:: Sam F // PyGoose // https://github.com/SimLoads
 '''
-Version = '012820.5x0008'
+Version = '030620.5x0010'
 '''
 Release Version:: 0.0.2
 
@@ -57,7 +57,7 @@ def startupCheck():
 
 def xs_help():
     print("XaviShell Help\n\nCommands:\n")
-    for key, value in cmList.items():
+    for key, value in helpdict.items():
         print('%s: %s' %(key, value))
 
 def execdir(request=False):
@@ -66,7 +66,6 @@ def execdir(request=False):
             current = xfc.read()
             xfc.close()   
         return(current.split(' >< ')[0])
-
     with open('.xaviconf', 'r') as xfc:
         current = xfc.read()
         print("Current directory: " + (current.split(' >< ')[0]))
@@ -106,6 +105,7 @@ def takeInput():
             takeInput()
         elif process in cmList:
             (cmList[process])()
+            takeInput()
         else:
             if process == "exit":
                 exit()
