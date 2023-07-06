@@ -1,5 +1,5 @@
 numpy==1.16.3
-scipy==1.2.1
+scipy==1.10.0
 sounddevice==0.3.13
 matplotlib==3.0.3
 cffi==1.12.3
